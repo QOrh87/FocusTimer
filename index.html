@@ -3,73 +3,770 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Pomodoro Timer</title>
+    <title>Focus Timer Pro</title>
+    
+    <meta name="description" content="シンプルで美しいデザインの作業用タイマー。ポモドーロテクニックに対応し、履歴管理やアニメーションであなたの集中をサポートします。完全無料。">
+    <meta name="keywords" content="タイマー, ポモドーロ, 集中, 作業用, 無料ツール, フルスクリーン, 勉強">
+    
+    <meta property="og:title" content="Focus Timer Pro">
+    <meta property="og:description" content="集中力を高めるための究極のシンプルタイマー。">
+    <meta property="og:type" content="website">
+
     <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --panel-bg: #2a2a2a;
+            --text-color: #e0e0e0;
+            --accent-color: #007bff;
+            --pause-color: #FDFD96;
+            --sub-text: #888;
+        }
+
         body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
-            background-color: #ff6b6b; /* ポモドーロらしい赤 */
-            color: white;
-            transition: background-color 0.5s;
+            overflow: hidden;
+            cursor: default;
+            transition: background-color 0.5s, color 0.5s;
         }
-        .container { text-align: center; }
-        .timer { font-size: 8rem; font-weight: bold; margin-bottom: 20px; }
-        .controls button {
-            padding: 15px 40px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            background: white;
-            color: #ff6b6b;
+
+        #main-container {
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .settings-view {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            align-items: center;
+            position: relative;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: baseline;
+            gap: 15px;
+        }
+
+        input[type="number"], input[type="text"] {
+            background: transparent;
             border: none;
-            border-radius: 50px;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border-bottom: 2px solid #444;
+            color: white;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.3s;
         }
-        .controls button:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        input[type="number"] { font-size: 48px; width: 90px; font-variant-numeric: tabular-nums; }
+        input[type="text"] { width: 350px; font-size: 24px; }
+        
+        input.active-focus {
+            border-bottom-color: var(--accent-color) !important;
+            border-bottom-width: 3px;
+        }
+
+        input:focus { border-bottom-color: var(--accent-color); }
+
+        .label { font-size: 14px; color: var(--sub-text); margin-left: 5px; }
+
+        .controls-top-right {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 20px;
+            z-index: 110;
+            align-items: center;
+        }
+        .panel-trigger {
+            cursor: pointer;
+            font-size: 20px;
+            opacity: 0.15;
+            color: var(--text-color);
+            transition: opacity 0.4s, color 0.4s;
+            user-select: none;
+        }
+        .panel-trigger:hover { 
+            opacity: 0.8; 
+            color: var(--accent-color);
+        }
+
+        /* 三連ドットメニューのスタイル */
+        .menu-container {
+            position: relative;
+        }
+        #menu-dropdown {
+            display: none;
+            position: absolute;
+            top: 35px;
+            right: 0;
+            background: var(--panel-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            width: 160px;
+            overflow: hidden;
+            z-index: 120;
+        }
+        .menu-item {
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #ccc;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            text-align: left;
+        }
+        .menu-item:hover {
+            background: rgba(255,255,255,0.05);
+            color: var(--accent-color);
+        }
+
+        #config-panel {
+            display: none;
+            position: fixed;
+            top: 65px; 
+            right: 20px;
+            background: var(--panel-bg);
+            padding: 20px;
+            border-radius: 12px;
+            z-index: 100;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: left; 
+            min-width: 320px;
+        }
+        
+        #log-side-panel {
+            display: none; 
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 260px;
+            max-height: 80vh;
+            background: rgba(42, 42, 42, 0.4); 
+            backdrop-filter: blur(4px);
+            padding: 15px;
+            border-radius: 12px;
+            z-index: 90;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            text-align: left;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* モーダル */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: var(--panel-bg);
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            padding: 40px;
+            border-radius: 20px;
+            overflow-y: auto;
+            position: relative;
+            text-align: left;
+            line-height: 1.8;
+            font-size: 14px;
+            color: #ccc;
+        }
+        .modal-content h2 { color: var(--text-color); margin-top: 0; border-left: 4px solid var(--accent-color); padding-left: 15px; }
+        .modal-content h3 { color: var(--text-color); font-size: 16px; margin-top: 25px; }
+        .close-modal {
+            position: absolute; top: 20px; right: 20px;
+            font-size: 24px; cursor: pointer; color: var(--sub-text);
+        }
+
+        .config-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 13px;
+            min-height: 32px;
+        }
+
+        .config-sub-label { display: block; color: var(--sub-text); font-size: 11px; margin-bottom: 5px; }
+
+        #timer-view { display: none; }
+        #countdown-display {
+            font-size: clamp(60px, 15vw, 180px);
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.3s, opacity 0.3s;
+        }
+
+        #info-overlay {
+            position: fixed;
+            bottom: 30px; right: 40px;
+            text-align: right;
+            display: none;
+            z-index: 2000;
+        }
+        .stopwatch { font-size: 16px; color: #555; font-family: monospace; }
+        
+        #result-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: none;
+            z-index: 1000; cursor: pointer;
+            background-color: rgba(0,0,0,0);
+            transition: background-color 300s linear;
+        }
+        canvas#pattern-canvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1001;
+            opacity: 0;
+            transition: opacity 10s ease-in;
+        }
+
+        .log-header {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 11px; font-weight: bold; margin-bottom: 10px;
+            color: var(--sub-text); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;
+        }
+        .log-entry {
+            position: relative; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+            line-height: 1.3; font-size: 11px; color: rgba(224, 224, 224, 0.8);
+        }
+        .log-entry:hover { color: #fff; }
+        .log-entry:hover .btn-delete { opacity: 1; }
+        .log-meta { display: flex; justify-content: space-between; margin-top: 3px; font-size: 10px; color: #555; }
+        .log-status-comp { color: var(--accent-color); opacity: 0.8; }
+        .log-status-abort { color: #777; }
+        
+        .btn-delete {
+            opacity: 0; background: none; border: none; color: #ff4d4d;
+            cursor: pointer; font-size: 10px; padding: 2px 5px; transition: opacity 0.2s;
+        }
+        .btn-clear-all {
+            background: rgba(255,255,255,0.05); color: #777; border: none; border-radius: 4px;
+            font-size: 9px; cursor: pointer; padding: 2px 6px;
+        }
+        .btn-clear-all:hover { background: rgba(255,255,255,0.1); color: #ccc; }
+
+        .switch { position: relative; display: inline-block; width: 34px; height: 20px; flex-shrink: 0; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #444; transition: .4s; border-radius: 20px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 14px; width: 14px;
+            left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--accent-color); }
+        input:checked + .slider:before { transform: translateX(14px); }
+
+        .mini-input, .mini-select {
+            background: #1a1a1a; border: 1px solid #444; color: white;
+            border-radius: 4px; padding: 2px 4px; font-size: 12px; outline: none;
+        }
+        .mini-input { width: 38px; text-align: center; }
+        .mini-select { width: 110px; cursor: pointer; height: 24px; }
+
+        .config-row-right { display: flex; align-items: center; gap: 8px; }
+
+        .ad-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            min-height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+            z-index: 5;
+        }
+        .ad-container:hover { opacity: 1; }
+        
+        body:has(#timer-view[style*="display: block"]) .ad-container,
+        body:has(#result-screen[style*="display: flex"]) .ad-container,
+        body:has(#timer-view[style*="display: block"]) .controls-top-right,
+        body:has(#result-screen[style*="display: flex"]) .controls-top-right {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="timer" id="display">25:00</div>
-    <div class="controls">
-        <button id="startBtn" onclick="toggleTimer()">START</button>
+    <div class="controls-top-right">
+        <div class="menu-container">
+            <div id="menu-trigger" class="panel-trigger" title="メニュー" style="font-weight: bold;">⋮</div>
+            <div id="menu-dropdown">
+                <div class="menu-item" onclick="openModal('modal-help')">使い方</div>
+                <div class="menu-item" onclick="openModal('modal-privacy')">プライバシーポリシー</div>
+            </div>
+        </div>
+        <div id="log-trigger" class="panel-trigger" title="履歴を表示/非表示">📖</div>
+        <div id="config-trigger" class="panel-trigger" title="詳細設定">⚙️</div>
     </div>
-</div>
 
-<script>
-    let timeLeft = 25 * 60;
-    let timerId = null;
+    <div id="modal-help" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-help')">×</span>
+            <h2>How to Use</h2>
+            <h3>1. タイマーを設定する</h3>
+            <p>中央の数字をクリック、または[←][→]キーで「時間」「分」「秒」を選択し、[↑][↓]キーまたは直接入力で時間を設定します。</p>
+            <h3>2. タスクを入力する</h3>
+            <p>「取り組む内容」に今の目標を入力します。これはタイマー作動中に画面右下に表示されます。</p>
+            <h3>3. スタートと操作</h3>
+            <p>[Enter]キーで開始します。作動中は[Space]キーで一時停止、[Esc]キーでリセットが可能です。</p>
+            <h3>4. 終了とログ</h3>
+            <p>時間が来るとアラーム（設定でオンの場合）と美しいアニメーションが流れます。完了したタスクは自動的に履歴（📖アイコン）に保存されます。</p>
+        </div>
+    </div>
 
-    function updateDisplay() {
-        const mins = Math.floor(timeLeft / 60);
-        const secs = timeLeft % 60;
-        document.getElementById('display').innerText = 
-            `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    }
+    <div id="modal-privacy" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-privacy')">×</span>
+            <h2>Privacy Policy</h2>
+            <h3>広告の配信について</h3>
+            <p>当サイトでは、第三者配信の広告サービス「Google アドセンス」を利用しています。広告配信事業者は、ユーザーの興味に応じた広告を表示するためにCookieを使用することがあります。</p>
+            <h3>データの保存について</h3>
+            <p>本アプリで入力されたタスク名やタイマーの履歴、設定情報は、すべてお客様のブラウザ内（Local Storage）にのみ保存されます。サーバーへ送信されることはありません。</p>
+            <h3>免責事項</h3>
+            <p>本アプリの利用により生じた損害について、開発者は一切の責任を負いません。あらかじめご了承ください。</p>
+        </div>
+    </div>
 
-    function toggleTimer() {
-        const btn = document.getElementById('startBtn');
-        if (timerId) {
-            clearInterval(timerId);
-            timerId = null;
-            btn.innerText = "START";
-        } else {
-            btn.innerText = "STOP";
-            timerId = setInterval(() => {
-                timeLeft--;
-                updateDisplay();
-                if (timeLeft <= 0) {
-                    clearInterval(timerId);
-                    alert("Time is up! お疲れ様でした。");
-                }
-            }, 1000);
+    <div id="log-side-panel">
+        <div class="log-header">
+            <span>FOCUS HISTORY (MAX 20)</span>
+            <button class="btn-clear-all" onclick="clearAllLogs()">CLEAR</button>
+        </div>
+        <div id="log-list"></div>
+    </div>
+
+    <div id="main-container">
+        <div id="settings-view" class="settings-view">
+            <div id="config-panel">
+                <div class="config-item">
+                    <span>自動フルスクリーン</span>
+                    <label class="switch"><input type="checkbox" id="cfg-fullscreen"><span class="slider"></span></label>
+                </div>
+
+                <div class="config-item">
+                    <span>秒単位で表示</span>
+                    <label class="switch"><input type="checkbox" id="cfg-show-sec"><span class="slider"></span></label>
+                </div>
+
+                <div class="config-item">
+                    <span>終了アラーム</span>
+                    <div class="config-row-right">
+                        <select id="cfg-alarm-type" class="mini-select">
+                            <option value="standard">Beep</option>
+                            <option value="retro-alarm">レトロ</option>
+                            <option value="digital-chime">チャイム</option>
+                            <option value="old-bell">ベル</option>
+                            <option value="retro-up">アップ</option>
+                        </select>
+                        <label class="switch"><input type="checkbox" id="cfg-alarm"><span class="slider"></span></label>
+                    </div>
+                </div>
+
+                <div class="config-item">
+                    <span>テーマカラー</span>
+                    <div class="config-row-right">
+                        <select id="cfg-theme" class="mini-select" style="margin-right: 42px;">
+                            <option value="default">Standard</option>
+                            <option value="sakura">Sakura</option>
+                            <option value="forest">Forest</option>
+                            <option value="leaf">Grass</option>
+                            <option value="sun">Sun</option> 
+                            <option value="orange">Orange</option> 
+                            <option value="ocean">Ocean</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="config-item">
+                    <span>アラーム持続時間</span>
+                    <div class="config-row-right">
+                        <input type="number" id="cfg-alarm-duration" class="mini-input" value="30" min="1" max="180">
+                        <span style="font-size:10px; color:var(--sub-text); width: 14px;">秒</span>
+                        <div style="width: 34px;"></div>
+                    </div>
+                </div>
+
+                <hr style="border: 0; border-top: 1px solid #444; margin: 15px 0;">
+                <div class="config-item" style="flex-direction: column; align-items: flex-start;">
+                    <span class="config-sub-label">デフォルト時間の変更</span>
+                    <div style="display: flex; gap: 5px; align-items: center;">
+                        <input type="number" id="def-hr" class="mini-input" min="0" max="99"> <span style="font-size:10px; color:#555;">h</span>
+                        <input type="number" id="def-min" class="mini-input" min="0" max="59"> <span style="font-size:10px; color:#555;">m</span>
+                        <input type="number" id="def-sec" class="mini-input" min="0" max="59"> <span style="font-size:10px; color:#555;">s</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <input type="number" id="in-hr" value="0"> <span class="label">時間</span>
+                <input type="number" id="in-min" value="25"> <span class="label">分</span>
+                <input type="number" id="in-sec" value="0"> <span class="label">秒</span>
+            </div>
+            <input type="text" id="in-task" placeholder="取り組む内容" spellcheck="false">
+            
+            <div style="color: #333; font-size: 13px; line-height: 1.6; text-align: center;">
+                設定：[Enter]開始 / [←→]項目移動 / [↑↓]数値増減<br>
+                作動中：[Space]一時停止 / 終了時：操作で音停止 → もう一度操作で戻る
+            </div>
+        </div>
+
+        <div id="timer-view">
+            <div id="countdown-display">00:00</div>
+        </div>
+    </div>
+
+    <div id="info-overlay">
+        <div id="display-task" style="color:var(--sub-text); margin-bottom:5px;"></div>
+        <div id="display-elapsed" class="stopwatch">経過: 00:00:00</div>
+    </div>
+
+    <div id="result-screen">
+        <canvas id="pattern-canvas"></canvas>
+    </div>
+
+    <div class="ad-container">
+        <div style="color: #444; font-size: 10px; border: 1px dashed #444; padding: 20px 60px;">AD SPACE</div>
+    </div>
+
+    <script>
+        let mainInterval, alarmInterval, patternAnimationId, elapsedInterval;
+        let totalSec = 0, elapsedSec = 0;
+        let isPaused = false, isActive = false, isAlarmPlaying = false;
+        let audioCtx = null;
+        let currentFocusIndex = 1; 
+
+        const MAX_TOTAL_SEC = 359999; 
+
+        const THEMES = {
+            default: { bg: '#1a1a1a', panel: '#2a2a2a', accent: '#007bff', pattern: ['#007bff', '#00c6ff'] },
+            sakura:  { bg: '#2d2225', panel: '#3d2e32', accent: '#e4b0c7', pattern: ['#e4b0c7', '#ff69b4'] }, 
+            forest:  { bg: '#2a2320', panel: '#3a312d', accent: '#ca8f7e', pattern: ['#ca8f7e', '#ffdab9'] }, 
+            leaf:    { bg: '#02261d', panel: '#033b2d', accent: '#8fbc8f', pattern: ['#8fbc8f', '#228b22'] },
+            sun:     { bg: '#241e02', panel: '#382e03', accent: '#ffdd00', pattern: ['#ffdd00', '#ffffff'] },
+            orange:  { bg: '#261405', panel: '#3d2008', accent: '#ff8c00', pattern: ['#ff8c00', '#ffd700'] },
+            ocean:   { bg: '#021a1e', panel: '#032c33', accent: '#035162', pattern: ['#00d2ff', '#3a7bd5'] }  
+        };
+
+        const el = {
+            settings: document.getElementById('settings-view'),
+            timer: document.getElementById('timer-view'),
+            countdown: document.getElementById('countdown-display'),
+            overlay: document.getElementById('info-overlay'),
+            taskName: document.getElementById('display-task'),
+            elapsed: document.getElementById('display-elapsed'),
+            result: document.getElementById('result-screen'),
+            canvas: document.getElementById('pattern-canvas'),
+            inHr: document.getElementById('in-hr'), inMin: document.getElementById('in-min'), inSec: document.getElementById('in-sec'),
+            inTask: document.getElementById('in-task'),
+            cfgPanel: document.getElementById('config-panel'), cfgTrigger: document.getElementById('config-trigger'),
+            logSidePanel: document.getElementById('log-side-panel'), logTrigger: document.getElementById('log-trigger'),
+            logList: document.getElementById('log-list'),
+            cfgShowSec: document.getElementById('cfg-show-sec'), cfgAlarm: document.getElementById('cfg-alarm'), 
+            cfgAlarmDur: document.getElementById('cfg-alarm-duration'),
+            cfgFull: document.getElementById('cfg-fullscreen'),
+            cfgAlarmType: document.getElementById('cfg-alarm-type'),
+            cfgTheme: document.getElementById('cfg-theme'),
+            defHr: document.getElementById('def-hr'), defMin: document.getElementById('def-min'), defSec: document.getElementById('def-sec'),
+            menuTrigger: document.getElementById('menu-trigger'), menuDropdown: document.getElementById('menu-dropdown')
+        };
+
+        const DEFAULT_CONFIG = {
+            showSec: false, alarm: false, alarmType: 'standard', alarmDur: 30, full: true, theme: 'default', defTime: { h: 0, m: 25, s: 0 }
+        };
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; el.menuDropdown.style.display = 'none'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function applyTheme(themeKey) {
+            const theme = THEMES[themeKey] || THEMES.default;
+            document.documentElement.style.setProperty('--bg-color', theme.bg);
+            document.documentElement.style.setProperty('--panel-bg', theme.panel);
+            document.documentElement.style.setProperty('--accent-color', theme.accent);
         }
-    }
-</script>
+
+        function saveSettings() {
+            const settings = {
+                showSec: el.cfgShowSec.checked,
+                alarm: el.cfgAlarm.checked,
+                alarmType: el.cfgAlarmType.value,
+                alarmDur: parseInt(el.cfgAlarmDur.value) || 30,
+                full: el.cfgFull.checked,
+                theme: el.cfgTheme.value,
+                defTime: { h: el.defHr.value, m: el.defMin.value, s: el.defSec.value }
+            };
+            localStorage.setItem('focusTimerSettings_v3', JSON.stringify(settings));
+        }
+
+        function loadSettings() {
+            const saved = localStorage.getItem('focusTimerSettings_v3');
+            const s = saved ? JSON.parse(saved) : DEFAULT_CONFIG;
+            el.cfgShowSec.checked = s.showSec; el.cfgAlarm.checked = s.alarm;
+            el.cfgAlarmType.value = s.alarmType || 'standard'; el.cfgAlarmDur.value = s.alarmDur || 30;
+            el.cfgFull.checked = s.full; el.cfgTheme.value = s.theme || 'default';
+            el.defHr.value = s.defTime.h; el.defMin.value = s.defTime.m; el.defSec.value = s.defTime.s;
+            el.inHr.value = s.defTime.h; el.inMin.value = s.defTime.m; el.inSec.value = s.defTime.s;
+            applyTheme(el.cfgTheme.value); renderLogs(); updateFocusUI();
+        }
+
+        function applyRollLogic(inputs) {
+            let h = parseInt(inputs[0].value) || 0, m = parseInt(inputs[1].value) || 0, s = parseInt(inputs[2].value) || 0;
+            if (s >= 60) { m += Math.floor(s / 60); s %= 60; }
+            if (s < 0) { m += Math.floor(s / 60); s = (s % 60 + 60) % 60; }
+            if (m >= 60) { h += Math.floor(m / 60); m %= 60; }
+            if (m < 0) { h += Math.floor(m / 60); m = (m % 60 + 60) % 60; }
+            let total = h * 3600 + m * 60 + s;
+            if (total > MAX_TOTAL_SEC) { h = 99; m = 59; s = 59; }
+            else if (total < 0) { h = 0; m = 0; s = 0; }
+            inputs[0].value = h; inputs[1].value = m; inputs[2].value = s;
+            saveSettings();
+        }
+
+        function updateFocusUI() {
+            const configOpen = el.cfgPanel.style.display === 'block';
+            const mainInputs = [el.inHr, el.inMin, el.inSec], defInputs = [el.defHr, el.defMin, el.defSec];
+            mainInputs.forEach((input, idx) => {
+                if (!configOpen && idx === currentFocusIndex) input.classList.add('active-focus');
+                else input.classList.remove('active-focus');
+            });
+            defInputs.forEach((input, idx) => {
+                if (configOpen && idx === currentFocusIndex) input.classList.add('active-focus');
+                else input.classList.remove('active-focus');
+            });
+        }
+
+        [el.inHr, el.inMin, el.inSec, el.defHr, el.defMin, el.defSec].forEach(input => {
+            input.oninput = () => {
+                const configOpen = el.cfgPanel.style.display === 'block';
+                const targets = configOpen ? [el.defHr, el.defMin, el.defSec] : [el.inHr, el.inMin, el.inSec];
+                applyRollLogic(targets);
+            };
+            input.onfocus = (e) => {
+                const id = e.target.id;
+                if (id.includes('hr')) currentFocusIndex = 0; else if (id.includes('min')) currentFocusIndex = 1; else if (id.includes('sec')) currentFocusIndex = 2;
+                updateFocusUI();
+            };
+        });
+
+        function formatByConfig(seconds, showSec) {
+            const h = Math.floor(seconds / 3600), m = Math.floor((seconds % 3600) / 60), s = seconds % 60;
+            if (showSec) return (h > 0 ? String(h).padStart(2, '0') + ":" : "00:") + String(m).padStart(2, '0') + ":" + String(s).padStart(2, '0');
+            else {
+                let dispM = m; if (seconds > 0 && s > 0) dispM = m + 1;
+                let dispH = h; if (dispM >= 60) { dispH += 1; dispM = 0; }
+                return String(dispH).padStart(2, '0') + ":" + String(dispM).padStart(2, '0');
+            }
+        }
+
+        class PatternEngine {
+            constructor(canvas, themeKey) {
+                this.canvas = canvas; this.ctx = canvas.getContext('2d');
+                this.themeKey = themeKey; this.theme = THEMES[themeKey] || THEMES.default;
+                this.items = []; this.resize(); this.init();
+            }
+            resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; }
+            init() {
+                let count = this.themeKey === 'sakura' ? 100 : 60;
+                for(let i=0; i<count; i++) {
+                    this.items.push({
+                        x: Math.random() * this.canvas.width, y: Math.random() * this.canvas.height,
+                        size: Math.random() * 20 + 8, speed: Math.random() * 1.5 + 0.5,
+                        angle: Math.random() * Math.PI * 2, rotSpeed: (Math.random() - 0.5) * 0.08,
+                        opacity: Math.random(), offset: Math.random() * 100, radius: 0
+                    });
+                }
+            }
+            draw() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                const colors = this.theme.pattern;
+                this.items.forEach(p => {
+                    this.ctx.save(); this.ctx.globalAlpha = (0.5 + p.opacity * 0.4);
+                    this.ctx.fillStyle = colors[0]; this.ctx.strokeStyle = colors[1];
+                    switch(this.themeKey) {
+                        case 'sakura':
+                            p.angle += p.rotSpeed; this.ctx.translate(p.x, p.y); this.ctx.rotate(p.angle);
+                            this.ctx.fillRect(-p.size, -p.size, p.size * 2, p.size * 2); break;
+                        case 'forest':
+                            p.y += p.speed; p.x += Math.sin(Date.now() * 0.002 + p.offset) * 1.5;
+                            p.angle += p.rotSpeed; if(p.y > this.canvas.height) p.y = -p.size;
+                            this.ctx.translate(p.x, p.y); this.ctx.rotate(p.angle);
+                            this.ctx.beginPath(); this.ctx.ellipse(0, 0, p.size, p.size/2, 0, 0, Math.PI*2); this.ctx.fill(); break;
+                        case 'sun':
+                            const cx = this.canvas.width / 2, cy = this.canvas.height / 2;
+                            p.radius += p.speed * 3; if(p.radius > this.canvas.width) p.radius = 0;
+                            this.ctx.beginPath(); this.ctx.lineWidth = 2; this.ctx.arc(cx, cy, p.radius, 0, Math.PI * 2); this.ctx.stroke();
+                            p.x += Math.cos(p.angle) * p.speed * 4; p.y += Math.sin(p.angle) * p.speed * 4;
+                            if(p.x < 0 || p.x > this.canvas.width || p.y < 0 || p.y > this.canvas.height) { p.x = cx; p.y = cy; p.angle = Math.random() * Math.PI * 2; }
+                            this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.size / 4, 0, Math.PI * 2); this.ctx.fill(); break;
+                        case 'orange':
+                            p.x += p.speed * 2.5; p.y = this.canvas.height - 40; p.angle += 0.15;
+                            if(p.x > this.canvas.width + 50) p.x = -50;
+                            this.ctx.lineWidth = 1; this.ctx.translate(p.x, p.y); this.ctx.rotate(p.angle);
+                            this.ctx.beginPath(); this.ctx.arc(0, 0, p.size, 0, Math.PI*2); this.ctx.fill(); this.ctx.stroke();
+                            this.ctx.beginPath(); this.ctx.moveTo(0, -p.size); this.ctx.lineTo(0, p.size); this.ctx.stroke(); break;
+                        case 'leaf':
+                            const grid = 60; const waveX = Math.floor(p.x/grid)*grid, waveY = Math.floor(p.y/grid)*grid;
+                            const off = Math.sin(Date.now()*0.002 + (waveX+waveY)*0.01) * 15;
+                            this.ctx.fillRect(waveX, waveY + off, grid-8, grid-8); break;
+                        case 'ocean':
+                            p.x += (p.offset > 50 ? p.speed : -p.speed);
+                            if(p.x > this.canvas.width + 60) p.x = -60; if(p.x < -60) p.x = this.canvas.width + 60;
+                            this.ctx.beginPath(); this.ctx.moveTo(p.x, p.y); this.ctx.lineTo(p.x - 30, p.y - 15); this.ctx.lineTo(p.x - 30, p.y + 15); this.ctx.fill(); break;
+                        default:
+                            p.y += p.speed; if(p.y > this.canvas.height) p.y = -p.size;
+                            this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.size/2, 0, Math.PI*2); this.ctx.fill();
+                    }
+                    this.ctx.restore();
+                });
+                patternAnimationId = requestAnimationFrame(() => this.draw());
+            }
+        }
+
+        function startTimer() {
+            const h = parseInt(el.inHr.value) || 0, m = parseInt(el.inMin.value) || 0, s = parseInt(el.inSec.value) || 0;
+            totalSec = h * 3600 + m * 60 + s;
+            if (totalSec <= 0) return;
+            isActive = true; isPaused = false; elapsedSec = 0;
+            el.settings.style.display = 'none'; el.timer.style.display = 'block'; el.overlay.style.display = 'block';
+            const taskText = el.inTask.value.trim();
+            el.taskName.textContent = taskText; el.taskName.style.display = taskText === "" ? "none" : "block";
+            if (el.cfgFull.checked) { try { document.documentElement.requestFullscreen(); } catch(e){} }
+            updateDisplay();
+            mainInterval = setInterval(tick, 1000);
+            elapsedInterval = setInterval(() => { if(!isPaused) { elapsedSec++; updateElapsed(); } }, 1000);
+        }
+
+        function tick() { if (isPaused) return; if (totalSec > 0) { totalSec--; updateDisplay(); if (totalSec === 0) finish(); } }
+        function updateDisplay() { el.countdown.textContent = formatByConfig(totalSec, el.cfgShowSec.checked); document.title = `(${el.countdown.textContent}) Focus`; }
+        function updateElapsed() {
+            const h = Math.floor(elapsedSec / 3600), m = Math.floor((elapsedSec % 3600) / 60), s = elapsedSec % 60;
+            el.elapsed.textContent = el.cfgShowSec.checked ? `経過: ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}` : `経過: ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+        }
+
+        function togglePause() {
+            if (!isActive) return;
+            isPaused = !isPaused;
+            el.countdown.style.opacity = isPaused ? '0.3' : '1';
+            el.countdown.style.color = isPaused ? 'var(--pause-color)' : 'var(--text-color)';
+        }
+
+        function finish() {
+            clearInterval(mainInterval); isActive = false; isAlarmPlaying = true;
+            el.result.style.display = 'flex'; el.result.style.backgroundColor = 'rgba(0,0,0,0.85)';
+            saveLog(true); const engine = new PatternEngine(el.canvas, el.cfgTheme.value); engine.draw();
+            setTimeout(() => { el.canvas.style.opacity = '1'; }, 100);
+            if (el.cfgAlarm.checked) triggerAlarmCycle();
+        }
+
+        function triggerAlarmCycle() { if (!isAlarmPlaying) return; playAlarmSound(); alarmInterval = setTimeout(stopAlarm, (parseInt(el.cfgAlarmDur.value) || 30) * 1000); }
+
+        function playAlarmSound() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const type = el.cfgAlarmType.value, now = audioCtx.currentTime;
+            if (type === 'standard') {
+                const osc = audioCtx.createOscillator(), gain = audioCtx.createGain(); osc.type = 'sine'; osc.frequency.setValueAtTime(880, now);
+                gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 1);
+                osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(now + 1);
+            } else if (type === 'retro-alarm') {
+                for(let i=0; i<3; i++){
+                    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain(); osc.type = 'square'; osc.frequency.setValueAtTime(440, now + i*0.5);
+                    gain.gain.setValueAtTime(0.05, now + i*0.5); gain.gain.setValueAtTime(0, now + i*0.5 + 0.2);
+                    osc.connect(gain); gain.connect(audioCtx.destination); osc.start(now + i*0.5); osc.stop(now + i*0.5 + 0.2);
+                }
+            } else if (type === 'digital-chime') {
+                [659, 523].forEach((f, i) => {
+                    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain(); osc.frequency.setValueAtTime(f, now + i*0.3); gain.gain.setValueAtTime(0.1, now + i*0.3);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + i*0.3 + 0.5);
+                    osc.connect(gain); gain.connect(audioCtx.destination); osc.start(now + i*0.3); osc.stop(now + i*0.3 + 0.5);
+                });
+            } else if (type === 'old-bell') {
+                const osc = audioCtx.createOscillator(), gain = audioCtx.createGain(); osc.type = 'sawtooth'; osc.frequency.setValueAtTime(1200, now); osc.frequency.exponentialRampToValueAtTime(400, now + 0.4);
+                gain.gain.setValueAtTime(0.05, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+                osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(now + 0.4);
+            } else if (type === 'retro-up') {
+                const osc = audioCtx.createOscillator(), gain = audioCtx.createGain(); osc.frequency.setValueAtTime(200, now); osc.frequency.linearRampToValueAtTime(800, now + 0.3);
+                gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(now + 0.3);
+            }
+        }
+
+        function stopAlarm() { isAlarmPlaying = false; clearTimeout(alarmInterval); if (audioCtx) audioCtx.suspend(); }
+
+        function resetTimer() {
+            stopAlarm(); isActive = false; clearInterval(mainInterval); clearInterval(elapsedInterval); cancelAnimationFrame(patternAnimationId);
+            el.result.style.display = 'none'; el.timer.style.display = 'none'; el.overlay.style.display = 'none'; el.settings.style.display = 'flex';
+            el.canvas.style.opacity = '0'; document.title = "Focus Timer Pro";
+            if (document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+        }
+
+        function saveLog(isCompleted) {
+            const logs = JSON.parse(localStorage.getItem('focusTimerLogs_v3') || '[]');
+            logs.unshift({ id: Date.now(), task: el.inTask.value.trim() || "無題のタスク", time: formatByConfig(elapsedSec, true), date: new Date().toLocaleString(), completed: isCompleted });
+            localStorage.setItem('focusTimerLogs_v3', JSON.stringify(logs.slice(0, 20))); renderLogs();
+        }
+
+        function renderLogs() {
+            const logs = JSON.parse(localStorage.getItem('focusTimerLogs_v3') || '[]');
+            el.logList.innerHTML = logs.map(log => `
+                <div class="log-entry"><div style="display:flex; justify-content:space-between;"><strong>${log.task}</strong>
+                <button class="btn-delete" onclick="deleteLog(${log.id})">✕</button></div>
+                <div class="log-meta"><span>${log.date}</span><span class="${log.completed ? 'log-status-comp' : 'log-status-abort'}">${log.completed ? 'COMPLETED' : 'ABORTED'} (${log.time})</span></div></div>`).join('');
+        }
+
+        function deleteLog(id) { let logs = JSON.parse(localStorage.getItem('focusTimerLogs_v3') || '[]'); localStorage.setItem('focusTimerLogs_v3', JSON.stringify(logs.filter(l => l.id !== id))); renderLogs(); }
+        function clearAllLogs() { if(confirm("すべての履歴を削除しますか？")) { localStorage.setItem('focusTimerLogs_v3', '[]'); renderLogs(); } }
+
+        window.onkeydown = (e) => {
+            if (document.querySelector('.modal-overlay[style*="display: flex"]')) { if(e.key === 'Escape') closeModal(document.querySelector('.modal-overlay[style*="display: flex"]').id); return; }
+            if (isAlarmPlaying || el.result.style.display === 'flex') { e.preventDefault(); resetTimer(); return; }
+            if (isActive) { if (e.code === 'Space') { e.preventDefault(); togglePause(); } if (e.key === 'Escape') resetTimer(); return; }
+            const configOpen = el.cfgPanel.style.display === 'block';
+            const targets = configOpen ? [el.defHr, el.defMin, el.defSec] : [el.inHr, el.inMin, el.inSec];
+            if (e.key === 'ArrowRight') { e.preventDefault(); currentFocusIndex = (currentFocusIndex + 1) % 3; targets[currentFocusIndex].focus(); updateFocusUI(); }
+            if (e.key === 'ArrowLeft') { e.preventDefault(); currentFocusIndex = (currentFocusIndex + 2) % 3; targets[currentFocusIndex].focus(); updateFocusUI(); }
+            if (e.key === 'ArrowUp' || e.key === 'ArrowDown') { e.preventDefault(); targets[currentFocusIndex].value = (parseInt(targets[currentFocusIndex].value) || 0) + (e.key === 'ArrowUp' ? 1 : -1); applyRollLogic(targets); }
+            if (e.key === 'Enter') { if (configOpen) { el.cfgPanel.style.display = 'none'; updateFocusUI(); } else startTimer(); }
+            if (e.key === 'Escape') { if (configOpen) { el.cfgPanel.style.display = 'none'; updateFocusUI(); } if (el.logSidePanel.style.display === 'block') el.logSidePanel.style.display = 'none'; el.menuDropdown.style.display = 'none'; }
+        };
+
+        el.menuTrigger.onclick = (e) => { e.stopPropagation(); el.menuDropdown.style.display = el.menuDropdown.style.display === 'block' ? 'none' : 'block'; el.cfgPanel.style.display = 'none'; el.logSidePanel.style.display = 'none'; };
+        el.cfgTrigger.onclick = (e) => { e.stopPropagation(); el.cfgPanel.style.display = el.cfgPanel.style.display === 'block' ? 'none' : 'block'; el.menuDropdown.style.display = 'none'; if (el.cfgPanel.style.display === 'block') el.defMin.focus(); updateFocusUI(); };
+        el.logTrigger.onclick = (e) => { e.stopPropagation(); el.logSidePanel.style.display = el.logSidePanel.style.display === 'block' ? 'none' : 'block'; el.menuDropdown.style.display = 'none'; if(el.logSidePanel.style.display === 'block') renderLogs(); };
+        
+        document.onclick = () => { if (isAlarmPlaying) { stopAlarm(); return; } el.cfgPanel.style.display = 'none'; el.menuDropdown.style.display = 'none'; updateFocusUI(); };
+        el.cfgPanel.onclick = (e) => e.stopPropagation(); el.logSidePanel.onclick = (e) => e.stopPropagation(); el.menuDropdown.onclick = (e) => e.stopPropagation();
+        el.cfgPanel.onchange = () => { applyTheme(el.cfgTheme.value); saveSettings(); updateFocusUI(); };
+        el.cfgAlarmType.onchange = () => { saveSettings(); triggerAlarmCycle(); };
+        el.countdown.onclick = (e) => { e.stopPropagation(); togglePause(); };
+        el.result.onclick = (e) => { e.stopPropagation(); resetTimer(); };
+        window.onload = loadSettings;
+    </script>
 </body>
 </html>
