@@ -3,57 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My First Tool Site</title>
+    <title>My Pomodoro Timer</title>
     <style>
         body {
-            font-family: sans-serif;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #f4f4f9;
-        }
-        .container {
-            text-align: center;
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        h1 { color: #333; }
-        .count { font-size: 3rem; margin: 1rem 0; color: #007bff; }
-        button {
-            padding: 10px 20px;
-            font-size: 1rem;
-            cursor: pointer;
-            background-color: #007bff;
+            background-color: #ff6b6b; /* ポモドーロらしい赤 */
             color: white;
-            border: none;
-            border-radius: 5px;
-            transition: background 0.3s;
+            transition: background-color 0.5s;
         }
-        button:hover { background-color: #0056b3; }
+        .container { text-align: center; }
+        .timer { font-size: 8rem; font-weight: bold; margin-bottom: 20px; }
+        .controls button {
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            background: white;
+            color: #ff6b6b;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .controls button:hover { opacity: 0.9; transform: translateY(-2px); }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Counter Tool</h1>
-        <div class="count" id="counter">0</div>
-        <button onclick="increment()">Count Up!</button>
+<div class="container">
+    <div class="timer" id="display">25:00</div>
+    <div class="controls">
+        <button id="startBtn" onclick="toggleTimer()">START</button>
     </div>
+</div>
 
-    <script>
-        // JavaScriptの動作チェック用
-        let count = 0;
-        const counterElement = document.getElementById('counter');
+<script>
+    let timeLeft = 25 * 60;
+    let timerId = null;
 
-        function increment() {
-            count++;
-            counterElement.innerText = count;
-            console.log("Current count: " + count);
+    function updateDisplay() {
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        document.getElementById('display').innerText = 
+            `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function toggleTimer() {
+        const btn = document.getElementById('startBtn');
+        if (timerId) {
+            clearInterval(timerId);
+            timerId = null;
+            btn.innerText = "START";
+        } else {
+            btn.innerText = "STOP";
+            timerId = setInterval(() => {
+                timeLeft--;
+                updateDisplay();
+                if (timeLeft <= 0) {
+                    clearInterval(timerId);
+                    alert("Time is up! お疲れ様でした。");
+                }
+            }, 1000);
         }
-    </script>
+    }
+</script>
 </body>
 </html>
