@@ -4,7 +4,7 @@
 「集中」と「休憩」のサイクルを視覚的にサポートし、あなたの作業や勉強の効率を最大化します。
 
 ##  サイトURL
-https://qorh87.github.io/countup-test/
+[https://focus-timer-pro.com](https://focus-timer-pro.com)
 
 ##  特徴
 - **フルスクリーン対応**: 没入感のある表示で、余計な情報を遮断して作業に没頭できます。
