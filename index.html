@@ -13,7 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>勉強タイマー｜作業・勉強を効率化する集中ツール</title>
     
-    <meta name="description" content="シンプルなデザインの作業用タイマーです。最小の操作で「即」作業に取り掛かれます。「フルスクリーン」「秒数を繰り上げ表示」などのこだわり設計です。">
+    <meta name="description" content="シンプルなデザインの作業用タイマーです。最小の操作で「即」作業に取り掛かれます。ポモドーロテクニックに対応し、履歴管理で振り返りが可能で、あなたの作業や勉強の効率を最大化します。「フルスクリーン」「秒数を繰り上げ表示」などのこだわり設計です。">
     <meta name="keywords" content=" 勉強, タイマー, フルスクリーン, 作業用, 集中持続, ポモドーロ, シンプル, 無料ツール">
     
     <meta property="og:title" content="勉強・作業用に最適なポモドーロタイマー">
@@ -22,6 +22,17 @@
     <link rel="manifest" href="manifest.json">
 
     <style>
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
         :root {
             --bg-color: #1a1a1a;
             --panel-bg: #2a2a2a;
@@ -363,7 +374,9 @@
     </style>
 </head>
 <body>
-
+    <h1 class="visually-hidden">勉強タイマー｜"即"作業に取り掛かれる集中ツール</h1>
+    <p class="visually-hidden">シンプルなデザインの作業用タイマーです。最小の操作で「即」作業に取り掛かれます。ポモドーロテクニックに対応し、履歴管理で振り返りが可能で、あなたの作業や勉強の効率を最大化します。「フルスクリーン」「秒数を繰り上げ表示」などのこだわり設計です。</p>
+    
     <div class="controls-top-right">
         <div class="menu-container">
             <div id="menu-trigger" class="panel-trigger" title="メニュー" style="font-weight: bold;">⋮</div>
