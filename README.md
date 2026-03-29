@@ -6,7 +6,7 @@
 <table>
   <tr>
     <td><img src="images/screenshot1.png" width="200" alt="終了画面"></td>
-    <td><img src="images/screenshot4.jpg" width="200" alt="設定画面"></td>
+    <td><img src="images/screenshot3.png" width="200" alt="設定画面"></td>
   </tr>
 </table>
 
