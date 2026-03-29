@@ -357,7 +357,9 @@
             .controls-top-right { gap: 10px; }
             .panel-trigger { font-size: 18px; }
         }
-
+    .highlight-text {
+    color: var(--accent-color);}
+        
     </style>
 </head>
 <body>
@@ -497,7 +499,7 @@
             <input type="text" id="in-task" placeholder="メモ" spellcheck="false">
             
             <div style="color: #333; font-size: 13px; line-height: 1.6; text-align: center;">
-                設定：[Enter]開始 / [←→]項目移動 / [↑↓]数値増減<br>
+                設定：<span class="highlight-text">[Enter] 開始</span> / [←→]項目移動 / [↑↓]数値増減<br>
                 作動中：[Space]一時停止 / 終了時：操作で音停止 → もう一度操作で戻る
             </div>
         </div>
