@@ -3,6 +3,8 @@
 シンプルで洗練されたブラウザで動くタイマーです。
 最小の操作で素早く作業に取り掛かれます（時間を設定してEnterキーを押すだけ！）。履歴管理で振り返りが可能で、あなたの作業や勉強の効率を最大化します。
 
+![Main View](images/screenshot1.png)
+
 ##  サイトURL
 [https://focus-timer-pro.com](https://focus-timer-pro.com)
 
