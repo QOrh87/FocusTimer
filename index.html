@@ -578,7 +578,7 @@
         };
 
         const DEFAULT_CONFIG = {
-            showSec: false, alarm: false, alarmType: 'standard', alarmDur: 30, full: true, theme: 'default', defTime: { h: 0, m: 25, s: 0 }
+            showSec: false, alarm: false, alarmType: 'standard', alarmDur: 5, full: true, theme: 'default', defTime: { h: 0, m: 25, s: 0 }
         };
 
         function openModal(id) { document.getElementById(id).style.display = 'flex'; el.menuDropdown.style.display = 'none'; }
@@ -596,7 +596,7 @@
                 showSec: el.cfgShowSec.checked,
                 alarm: el.cfgAlarm.checked,
                 alarmType: el.cfgAlarmType.value,
-                alarmDur: parseInt(el.cfgAlarmDur.value) || 30,
+                alarmDur: parseInt(el.cfgAlarmDur.value) || 5,
                 full: el.cfgFull.checked,
                 theme: el.cfgTheme.value,
                 defTime: { h: el.defHr.value, m: el.defMin.value, s: el.defSec.value }
@@ -764,10 +764,18 @@
             if (el.cfgAlarm.checked) triggerAlarmCycle();
         }
 
-        function triggerAlarmCycle() { if (!isAlarmPlaying) return; playAlarmSound(); alarmInterval = setTimeout(stopAlarm, (parseInt(el.cfgAlarmDur.value) || 30) * 1000); }
-
+        let alarmRepeatTimer;
+        function triggerAlarmCycle() { if (!isAlarmPlaying) return; playAlarmSound(); 
+            alarmRepeatTimer = setInterval(() => {
+                if (isAlarmPlaying) {playAlarmSound();} else {clearInterval(alarmRepeatTimer);}
+            }, 2000);
+            alarmInterval = setTimeout(() => {
+            isAlarmPlaying = false; 
+            clearInterval(alarmRepeatTimer);}, (parseInt(el.cfgAlarmDur.value) || 5) * 1000);}
+        
         async function playAlarmSound() {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') await audioCtx.resume();
             const type = el.cfgAlarmType.value, now = audioCtx.currentTime;
             if (type === 'standard') {
                 const osc = audioCtx.createOscillator(), gain = audioCtx.createGain(); osc.type = 'sine'; osc.frequency.setValueAtTime(880, now);
@@ -796,7 +804,7 @@
             }
         }
 
-        function stopAlarm() { isAlarmPlaying = false; clearTimeout(alarmInterval); if (audioCtx) audioCtx.suspend(); }
+        function stopAlarm() { isAlarmPlaying = false; clearTimeout(alarmInterval); if (alarmRepeatTimer) clearInterval(alarmRepeatTimer); if (audioCtx) audioCtx.suspend(); }
 
         function resetTimer() {
             stopAlarm(); isActive = false; clearInterval(mainInterval); clearInterval(elapsedInterval); cancelAnimationFrame(patternAnimationId);
