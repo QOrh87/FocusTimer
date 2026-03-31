@@ -9,6 +9,7 @@
     <td><img src="images/screenshot1.png" width="220" alt="終了画面"></td>
     <td><img src="images/screenshot10.png" width="220" alt="設定画面"></td>
   </tr>
+</table>
 
 ##  サイトURL
 [https://focus-timer-pro.com](https://focus-timer-pro.com)
