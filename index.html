@@ -820,7 +820,7 @@
             if (document.fullscreenElement) document.exitFullscreen().catch(()=>{});
         }
 
-        function saveLog(isCompleted) {
+        function saveLog(isCompleted, actualTimeSec) {
             const logs = JSON.parse(localStorage.getItem('focusTimerLogs_v3') || '[]');
             const h = parseInt(el.inHr.value) || 0, m = parseInt(el.inMin.value) || 0, s = parseInt(el.inSec.value) || 0;
             const plannedTime = formatByConfig(h * 3600 + m * 60 + s, true);
