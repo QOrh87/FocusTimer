@@ -4,10 +4,8 @@
 最小の操作で素早く作業に取り掛かれます。履歴管理で振り返りが可能で、あなたの作業や勉強の効率を最大化します。
 
 <table>
-  <tr>
     <td><img src="images/screenshot6.png" width="220" alt="設定画面"></td>
     <td><img src="images/screenshot1.png" width="220" alt="終了画面"></td>
-  </tr>
 </table>
 
 ##  サイトURL
