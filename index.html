@@ -20,7 +20,8 @@
     <meta property="og:description" content="集中力を高めるための究極のシンプルタイマー。">
     <meta property="og:type" content="website">
     <link rel="manifest" href="manifest.json">
-
+    <meta id="theme-meta" name="theme-color" content="#071a14">
+    
     <style>
         .visually-hidden {
             position: absolute;
@@ -702,6 +703,8 @@
             document.documentElement.style.setProperty('--bg-color', theme.bg);
             document.documentElement.style.setProperty('--panel-bg', theme.panel);
             document.documentElement.style.setProperty('--accent-color', theme.accent);
+            const currentBgColor = getComputedStyle(document.documentElement).getPropertyValue('--bg-color').trim();
+            document.getElementById('theme-meta').setAttribute('content', currentBgColor);
         }
 
         function saveSettings() {
