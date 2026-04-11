@@ -10,7 +10,7 @@
 </script>
     
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Focus Timer Pro｜パソコンブラウザで動くインストール不要の無料タイマー（Webアプリ）</title>
     
     <meta name="description" content="シンプルなデザインのタイマーです。少ない操作で'即'作業に取り掛かれます。「フルスクリーン」「秒数を繰り上げ表示」など使い勝手にこだわりました。履歴管理で振り返りが可能で、あなたの作業や勉強の効率を最大化します。ポモドーロテクニックにも対応できます。">
@@ -23,7 +23,6 @@
     <meta id="theme-meta" name="theme-color" content="#071a14">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
     <style>
         .visually-hidden {
@@ -710,6 +709,8 @@
             document.documentElement.style.setProperty('--accent-color', theme.accent);
             const currentBgColor = getComputedStyle(document.documentElement).getPropertyValue('--bg-color').trim();
             document.getElementById('theme-meta').setAttribute('content', currentBgColor);
+            const themeMeta = document.getElementById('theme-meta');
+            if (themeMeta) themeMeta.setAttribute('content', theme.bg);
         }
 
         function saveSettings() {
