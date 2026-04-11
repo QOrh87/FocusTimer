@@ -39,10 +39,6 @@
         }
         html {background-color: var(--bg-color);
         }
-        html {background-color: #000 !important;
-        }
-        body {height: 100dvh;
-        }
         :root {
             --bg-color: #1a1a1a;
             --panel-bg: #2a2a2a;
@@ -709,11 +705,9 @@
 
         function applyTheme(themeKey) {
             const theme = THEMES[themeKey] || THEMES.default;
-            const root = document.documentElement;
             document.documentElement.style.setProperty('--bg-color', theme.bg);
             document.documentElement.style.setProperty('--panel-bg', theme.panel);
             document.documentElement.style.setProperty('--accent-color', theme.accent);
-            root.style.backgroundColor = theme.bg;
             const currentBgColor = getComputedStyle(document.documentElement).getPropertyValue('--bg-color').trim();
             document.getElementById('theme-meta').setAttribute('content', currentBgColor);
             document.body.style.backgroundColor = theme.bg;
