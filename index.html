@@ -498,17 +498,17 @@
         <div id="settings-view" class="settings-view">
             <div id="config-panel">
                 <div class="config-item">
-                    <span>自動フルスクリーン</span>
+                    <span id="label-full">自動フルスクリーン</span>
                     <label class="switch"><input type="checkbox" id="cfg-fullscreen"><span class="slider"></span></label>
                 </div>
 
                 <div class="config-item">
-                    <span>秒単位で表示</span>
+                    <span id="label-show-sec">秒単位で表示</span>
                     <label class="switch"><input type="checkbox" id="cfg-show-sec"><span class="slider"></span></label>
                 </div>
 
                 <div class="config-item">
-                    <span>終了アラーム</span>
+                    <span id="label-alarm">終了アラーム</span>
                     <div class="config-row-right">
                         <select id="cfg-alarm-type" class="mini-select">
                             <option value="standard">Beep</option>
@@ -522,7 +522,7 @@
                 </div>
 
                 <div class="config-item">
-                    <span>テーマカラー</span>
+                    <span id="label-theme">テーマカラー</span>
                     <div class="config-row-right">
                         <select id="cfg-theme" class="mini-select" style="margin-right: 42px;">
                             <option value="default">Standard</option>
@@ -537,17 +537,17 @@
                 </div>
 
                 <div class="config-item">
-                    <span>アラーム持続時間</span>
+                    <span id="label-alarm-dur">アラーム持続時間</span>
                     <div class="config-row-right">
                         <input type="number" id="cfg-alarm-duration" class="mini-input" value="30" min="1" max="180">
-                        <span style="font-size:10px; color:var(--sub-text); width: 14px;">秒</span>
+                        <span id="unit-s-dur" style="font-size:10px; color:var(--sub-text); width: 14px;">秒</span>
                         <div style="width: 34px;"></div>
                     </div>
                 </div>
 
                 <hr style="border: 0; border-top: 1px solid #444; margin: 15px 0;">
                 <div class="config-item" style="flex-direction: column; align-items: flex-start;">
-                    <span class="config-sub-label">デフォルト時間の変更</span>
+                    <span class="config-sub-label" id="label-def-time">デフォルト時間の変更</span>
                     <div style="display: flex; gap: 5px; align-items: center;">
                         <input type="number" id="def-hr" class="mini-input" min="0" max="99"> <span id="def-unit-h" style="font-size:10px; color:#555;">h</span>
                         <input type="number" id="def-min" class="mini-input" min="0" max="59"> <span id="def-unit-m" style="font-size:10px; color:#555;">m</span>
@@ -619,7 +619,13 @@
             actual: isJa ? '実測' : 'Actual',
             guide: isJa ? '設定：<span class="highlight-text">[Enter] 開始</span> / [←→] 項目移動 / [↑↓] 調整<br>作動中：[Space] 一時停止 / [Esc] 中断' : 'Settings: <span class="highlight-text">[Enter] Start</span> / [←→] Select / [↑↓] Adjust<br>Running: [Space] Pause / [Esc] Reset',
             memo: isJa ? 'メモ' : 'Note / Task',
-            start: isJa ? '▶開始' : '▶START'
+            start: isJa ? '▶開始' : '▶START',
+            full: isJa ? '自動フルスクリーン' : 'Auto Fullscreen',
+            showSec: isJa ? '秒単位で表示' : 'Show Seconds',
+            alarm: isJa ? '終了アラーム' : 'Alarm Sound',
+            theme: isJa ? 'テーマカラー' : 'Theme Color',
+            alarmDur: isJa ? 'アラーム持続時間' : 'Alarm Duration',
+            defTime: isJa ? 'デフォルト時間の変更' : 'Default Timer'
         };
 
         const el = {
@@ -648,7 +654,15 @@
         window.addEventListener('DOMContentLoaded', () => {
             const ids = {
                 'unit-h': i18n.h, 'unit-m': i18n.m, 'unit-s': i18n.s,
-                'def-unit-h': i18n.h, 'def-unit-m': i18n.m, 'def-unit-s': i18n.s
+                'def-unit-h': i18n.h, 'def-unit-m': i18n.m, 'def-unit-s': i18n.s,
+                'unit-s-dur': i18n.s,
+                'label-full': i18n.full,
+                'label-show-sec': i18n.showSec,
+                'label-alarm': i18n.alarm,
+                'label-theme': i18n.theme,
+                'label-alarm-dur': i18n.alarmDur,
+                'label-def-time': i18n.defTime,
+                'mobile-start-btn': i18n.start
             };
             for (const [id, text] of Object.entries(ids)) {
                 const target = document.getElementById(id); 
