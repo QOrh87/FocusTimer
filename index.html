@@ -812,7 +812,7 @@
             totalSec = h * 3600 + m * 60 + s;
             if (totalSec <= 0) return;
             isActive = true; isPaused = false; elapsedSec = 0;
-            startTime = new Date().toLocaleString()+ " ～";
+            startTime = new Date().toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) + "～";
             if (el.logSidePanel) el.logSidePanel.style.display = 'none';
             el.settings.style.display = 'none'; el.timer.style.display = 'block'; el.overlay.style.display = 'block';
             const taskText = el.inTask.value.trim();
