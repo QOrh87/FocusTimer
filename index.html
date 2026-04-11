@@ -379,15 +379,17 @@
     .mobile-start-btn {
         display: block;
         width: 100%;
-        margin-top: 15px;
-        padding: 12px;
-        font-size: 1.5rem;
-        font-weight: bold;
-        background: transparent;
-        /* テーマの色と連動 */
-        border: 2px solid var(--text-color);
+        margin-top: 20px;
+        padding: 15px;
+        font-size: 1.4rem;
+        font-weight: 300;
+        letter-spacing: 0.2em;
+        background: var(--bg-color); /* 背景色と同じにする */
         color: var(--text-color);
-        border-radius: 8px;
+        border: none; /* 枠線を消す */
+        border-radius: 50px; /* 丸みを持たせる */
+        /* 影で立体感を出す */
+        box-shadow: 3px 3px 6px rgba(0,0,0,0.2), -3px -3px 6px rgba(255,255,255,0.05);
         cursor: pointer;
     }
     .mobile-start-btn:active {
@@ -551,7 +553,7 @@
                 設定：<span class="highlight-text">[Enter] 開始</span> / [←→]項目移動 / [↑↓]数値増減<br>
                 作動中：[Space]一時停止 / 終了時：操作で音停止 → もう一度操作で戻る
             </div>
-            <button id="mobile-start-btn" class="mobile-start-btn" onclick="if(!isActive) startTimer()">▶ START</button>
+            <button id="mobile-start-btn" class="mobile-start-btn" onclick="if(!isActive) startTimer()">▶ 開始</button>
         </div>
 
         <div id="timer-view">
