@@ -549,17 +549,17 @@
                 <div class="config-item" style="flex-direction: column; align-items: flex-start;">
                     <span class="config-sub-label">デフォルト時間の変更</span>
                     <div style="display: flex; gap: 5px; align-items: center;">
-                        <input type="number" id="def-hr" class="mini-input" min="0" max="99"> <span style="font-size:10px; color:#555;">h</span>
-                        <input type="number" id="def-min" class="mini-input" min="0" max="59"> <span style="font-size:10px; color:#555;">m</span>
-                        <input type="number" id="def-sec" class="mini-input" min="0" max="59"> <span style="font-size:10px; color:#555;">s</span>
+                        <input type="number" id="def-hr" class="mini-input" min="0" max="99"> <span id="def-unit-h" style="font-size:10px; color:#555;">h</span>
+                        <input type="number" id="def-min" class="mini-input" min="0" max="59"> <span id="def-unit-m" style="font-size:10px; color:#555;">m</span>
+                        <input type="number" id="def-sec" class="mini-input" min="0" max="59"> <span id="def-unit-s" style="font-size:10px; color:#555;">s</span>
                     </div>
                 </div>
             </div>
 
             <div class="input-group">
-                <input type="number" id="in-hr" value="0" inputmode="decimal"> <span class="label">時間</span>
-                <input type="number" id="in-min" value="25" inputmode="decimal"> <span class="label">分</span>
-                <input type="number" id="in-sec" value="0" inputmode="decimal"> <span class="label">秒</span>
+                <input type="number" id="in-hr" value="0" inputmode="decimal"> <span class="label" id="unit-h" style="white-space: nowrap !important; margin-left: 4px; margin-right: 12px; flex-shrink: 0;">時間</span>
+                <input type="number" id="in-min" value="25" inputmode="decimal"> <span class="label" id="unit-m">分</span>
+                <input type="number" id="in-sec" value="0" inputmode="decimal"> <span class="label" id="unit-s">秒</span>
             </div>
             <input type="text" id="in-task" placeholder="メモ" spellcheck="false">
             
@@ -633,6 +633,25 @@
             menuTrigger: document.getElementById('menu-trigger'), menuDropdown: document.getElementById('menu-dropdown')
         };
 
+        const isJa = navigator.language.startsWith('ja');
+        const i18n = {
+            h: isJa ? '時間' : 'hr',
+            m: isJa ? '分' : 'min',
+            s: isJa ? '秒' : 'sec',
+            plan: isJa ? '設定' : 'Plan',
+            actual: isJa ? '実測' : 'Actual'
+        };
+        window.addEventListener('DOMContentLoaded', () => {
+            const ids = {
+                'unit-h': i18n.h, 'unit-m': i18n.m, 'unit-s': i18n.s,
+                'def-unit-h': i18n.h, 'def-unit-m': i18n.m, 'def-unit-s': i18n.s
+            };
+            for (const [id, text] of Object.entries(ids)) {
+                const el = document.getElementById(id);
+                if (el) el.textContent = text;
+            }
+        });
+        
         const DEFAULT_CONFIG = {
             showSec: false, alarm: false, alarmType: 'standard', alarmDur: 5, full: true, theme: 'default', defTime: { h: 0, m: 25, s: 0 }
         };
@@ -928,7 +947,7 @@
             </div>
             <div style="font-size: 0.85em; opacity: 0.7; display: flex; gap: 10px; flex-wrap: wrap;">
                 <span>${log.date}</span>
-                <span>設定: ${log.planTime} / 実測: ${log.actualTime}</span>
+                <span>${i18n.plan}: ${log.planTime} / ${i18n.actual}: ${log.actualTime}</span>
             </div>            
         </div>`).join('');
         }
