@@ -374,7 +374,8 @@
 
                 /* ★PCではボタンを隠す */
 .mobile-start-btn { display: none; }
-@media (pointer: coarse) and (max-width: 768px) {
+@media (pointer: coarse) and (max-width: 768px), 
+       (pointer: coarse) and (max-height: 500px) and (orientation: landscape) {
     /* スマホではガイドを隠し、ボタンを表示 */
     #key-guide, #pc-guide { display: none !important; }
     .mobile-start-btn {
