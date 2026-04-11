@@ -710,9 +710,6 @@
             document.documentElement.style.setProperty('--accent-color', theme.accent);
             const currentBgColor = getComputedStyle(document.documentElement).getPropertyValue('--bg-color').trim();
             document.getElementById('theme-meta').setAttribute('content', currentBgColor);
-            document.body.style.backgroundColor = theme.bg;
-            const themeMeta = document.getElementById('theme-meta');
-            if (themeMeta) {themeMeta.setAttribute('content', theme.bg);}
         }
 
         function saveSettings() {
