@@ -639,7 +639,8 @@
             m: isJa ? '分' : 'min',
             s: isJa ? '秒' : 'sec',
             plan: isJa ? '設定' : 'Plan',
-            actual: isJa ? '実測' : 'Actual'
+            actual: isJa ? '実測' : 'Actual',
+            guide: isJa ? '設定：<span class="highlight-text">[Enter] 開始</span> / [←→]項目移動 / [↑↓]数値増減<br>作動中：[Space]一時停止 / 終了時：操作で音停止 → もう一度操作で戻る' : 'Settings: <span class="highlight-text">[Enter] Start</span> / [←→] Select / [↑↓] Adjust<br>Running: [Space] Pause / [Esc] Reset'
         };
         window.addEventListener('DOMContentLoaded', () => {
             const ids = {
@@ -647,9 +648,11 @@
                 'def-unit-h': i18n.h, 'def-unit-m': i18n.m, 'def-unit-s': i18n.s
             };
             for (const [id, text] of Object.entries(ids)) {
-                const el = document.getElementById(id);
-                if (el) el.textContent = text;
+                const target = document.getElementById(id); 
+                if (target) target.textContent = text;
             }
+            const pcGuideEl = document.getElementById('pc-guide');
+            if (pcGuideEl) pcGuideEl.innerHTML = i18n.guide;
         });
         
         const DEFAULT_CONFIG = {
