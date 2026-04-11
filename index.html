@@ -542,6 +542,7 @@
         let isPaused = false, isActive = false, isAlarmPlaying = false;
         let audioCtx = null;
         let currentFocusIndex = 1; 
+        let wakeLock = null;
 
         const MAX_TOTAL_SEC = 359999; 
 
@@ -616,6 +617,25 @@
             } else {el.inHr.value = s.defTime.h; el.inMin.value = s.defTime.m; el.inSec.value = s.defTime.s;
             }
             applyTheme(el.cfgTheme.value); renderLogs(); updateFocusUI();
+        }
+
+        async function requestWakeLock() {//★★★画面スリープ防止とそれを解除する関数
+            try {
+                if ('wakeLock' in navigator) {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                    console.log('Wake Lock is active');
+                }
+            } catch (err) {
+                console.log('Wake Lock error:', err);
+            }
+        }
+        function releaseWakeLock() {
+            if (wakeLock !== null) {
+                wakeLock.release().then(() => {
+                    wakeLock = null;
+                    console.log('Wake Lock released');
+                });
+            }
         }
 
         function applyRollLogic(inputs) {
@@ -757,6 +777,9 @@
         function togglePause() {
             if (!isActive) return;
             isPaused = !isPaused;
+            if (isPaused) {releaseWakeLock();
+            } else {requestWakeLock();
+            }
             el.countdown.style.opacity = isPaused ? '0.3' : '1';
             el.countdown.style.color = isPaused ? 'var(--pause-color)' : 'var(--text-color)';
         }
@@ -815,6 +838,7 @@
         function resetTimer() {
             if (isActive || isAlarmPlaying || el.result.style.display === 'flex'){const isCompleted = isAlarmPlaying || el.result.style.display === 'flex';saveLog(isCompleted, elapsedSec); 
             }
+            releaseWakeLock();
             stopAlarm(); isActive = false; clearInterval(mainInterval); clearInterval(elapsedInterval); cancelAnimationFrame(patternAnimationId);
             el.countdown.style.display = 'block';
             el.result.style.display = 'none'; el.timer.style.display = 'none'; el.overlay.style.display = 'none'; el.settings.style.display = 'flex';
