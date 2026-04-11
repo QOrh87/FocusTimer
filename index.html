@@ -525,13 +525,13 @@
                     <span id="label-theme">テーマカラー</span>
                     <div class="config-row-right">
                         <select id="cfg-theme" class="mini-select" style="margin-right: 42px;">
-                            <option value="default">Standard</option>
-                            <option value="sakura">桜</option>
-                            <option value="forest">森</option>
-                            <option value="leaf">芝生</option>
-                            <option value="sun">太陽</option> 
-                            <option value="orange">蜜柑</option> 
-                            <option value="ocean">海</option>
+                            <option value="default" id="opt-theme-default">Standard</option>
+                            <option value="sakura" id="opt-theme-sakura">桜</option>
+                            <option value="forest" id="opt-theme-forest">森</option>
+                            <option value="leaf" id="opt-theme-leaf">芝生</option>
+                            <option value="sun" id="opt-theme-sun">太陽</option> 
+                            <option value="orange" id="opt-theme-orange">蜜柑</option> 
+                            <option value="ocean" id="opt-theme-ocean">海</option>
                         </select>
                     </div>
                 </div>
@@ -625,7 +625,14 @@
             alarm: isJa ? '終了アラーム' : 'Alarm Sound',
             theme: isJa ? 'テーマカラー' : 'Theme Color',
             alarmDur: isJa ? 'アラーム持続時間' : 'Alarm Duration',
-            defTime: isJa ? 'デフォルト時間の変更' : 'Default Timer'
+            defTime: isJa ? 'デフォルト時間の変更' : 'Default Timer',
+            themeDefault: isJa ? 'Standard' : 'Standard',
+            themeSakura:  isJa ? '桜' : 'Sakura',
+            themeForest:  isJa ? '森' : 'Forest',
+            themeLeaf:    isJa ? '芝生' : 'Grass',
+            themeSun:     isJa ? '太陽' : 'Sunlight',
+            themeOrange:  isJa ? '蜜柑' : 'Orange',
+            themeOcean:   isJa ? '海' : 'Ocean'
         };
 
         const el = {
@@ -662,7 +669,14 @@
                 'label-theme': i18n.theme,
                 'label-alarm-dur': i18n.alarmDur,
                 'label-def-time': i18n.defTime,
-                'mobile-start-btn': i18n.start
+                'mobile-start-btn': i18n.start,
+                'opt-theme-default': i18n.themeDefault,
+                'opt-theme-sakura':  i18n.themeSakura,
+                'opt-theme-forest':  i18n.themeForest,
+                'opt-theme-leaf':    i18n.themeLeaf,
+                'opt-theme-sun':     i18n.themeSun,
+                'opt-theme-orange':  i18n.themeOrange,
+                'opt-theme-ocean':   i18n.themeOcean
             };
             for (const [id, text] of Object.entries(ids)) {
                 const target = document.getElementById(id); 
