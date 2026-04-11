@@ -828,7 +828,7 @@
             const plannedTime = formatByConfig(h * 3600 + m * 60 + s, true);
             const actualTime = formatByConfig(actualTimeSec, true);
             logs.unshift({ id: Date.now(), task: el.inTask.value.trim() || "⌘", planTime: plannedTime, actualTime: actualTime, date: startTime, completed: isCompleted });
-            localStorage.setItem('focusTimerLogs_v3', JSON.stringify(logs.slice(0, 20))); renderLogs();
+            localStorage.setItem('focusTimerLogs_v3', JSON.stringify(logs.slice(0, 400))); renderLogs();
         }
 
         function renderLogs() {const logs =JSON.parse(localStorage.getItem('focusTimerLogs_v3') || '[]');
