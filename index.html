@@ -703,10 +703,6 @@
             document.documentElement.style.setProperty('--bg-color', theme.bg);
             document.documentElement.style.setProperty('--panel-bg', theme.panel);
             document.documentElement.style.setProperty('--accent-color', theme.accent);
-            const currentBgColor = getComputedStyle(document.documentElement).getPropertyValue('--bg-color').trim();
-            document.getElementById('theme-meta').setAttribute('content', currentBgColor);
-            const themeMeta = document.getElementById('theme-meta');
-            if (themeMeta) themeMeta.setAttribute('content', theme.bg);
         }
 
         function saveSettings() {
