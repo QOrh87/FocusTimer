@@ -610,6 +610,18 @@
             ocean:   { bg: '#021a1e', panel: '#032c33', accent: '#035162', pattern: ['#00d2ff', '#3a7bd5'] }  
         };
 
+        const isJa = navigator.language.startsWith('ja');
+        const i18n = {
+            h: isJa ? '時間' : 'hr',
+            m: isJa ? '分' : 'min',
+            s: isJa ? '秒' : 'sec',
+            plan: isJa ? '設定' : 'Plan',
+            actual: isJa ? '実測' : 'Actual',
+            guide: isJa ? '設定：<span class="highlight-text">[Enter] 開始</span> / [←→]項目移動 / [↑↓]数値増減<br>作動中：[Space]一時停止 / 終了時：操作で音停止 → もう一度操作で戻る' : 'Settings: <span class="highlight-text">[Enter] Start</span> / [←→] Select / [↑↓] Adjust<br>Running: [Space] Pause / [Esc] Reset',
+            memo: isJa ? 'メモ' : 'Note / Task',
+            start: isJa ? '▶開始' : '▶START'
+        };
+
         const el = {
             settings: document.getElementById('settings-view'),
             timer: document.getElementById('timer-view'),
@@ -633,15 +645,6 @@
             menuTrigger: document.getElementById('menu-trigger'), menuDropdown: document.getElementById('menu-dropdown')
         };
 
-        const isJa = navigator.language.startsWith('ja');
-        const i18n = {
-            h: isJa ? '時間' : 'hr',
-            m: isJa ? '分' : 'min',
-            s: isJa ? '秒' : 'sec',
-            plan: isJa ? '設定' : 'Plan',
-            actual: isJa ? '実測' : 'Actual',
-            guide: isJa ? '設定：<span class="highlight-text">[Enter] 開始</span> / [←→]項目移動 / [↑↓]数値増減<br>作動中：[Space]一時停止 / 終了時：操作で音停止 → もう一度操作で戻る' : 'Settings: <span class="highlight-text">[Enter] Start</span> / [←→] Select / [↑↓] Adjust<br>Running: [Space] Pause / [Esc] Reset'
-        };
         window.addEventListener('DOMContentLoaded', () => {
             const ids = {
                 'unit-h': i18n.h, 'unit-m': i18n.m, 'unit-s': i18n.s,
@@ -653,6 +656,9 @@
             }
             const pcGuideEl = document.getElementById('pc-guide');
             if (pcGuideEl) pcGuideEl.innerHTML = i18n.guide;
+            if (el.inTask) el.inTask.placeholder = i18n.memo;
+            const mobileBtn = document.getElementById('mobile-start-btn');
+            if (mobileBtn) mobileBtn.textContent = i18n.start;
         });
         
         const DEFAULT_CONFIG = {
