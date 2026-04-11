@@ -612,7 +612,9 @@
             el.cfgAlarmType.value = s.alarmType || 'standard'; el.cfgAlarmDur.value = s.alarmDur || 30;
             el.cfgFull.checked = s.full; el.cfgTheme.value = s.theme || 'default';
             el.defHr.value = s.defTime.h; el.defMin.value = s.defTime.m; el.defSec.value = s.defTime.s;
-            el.inHr.value = s.defTime.h; el.inMin.value = s.defTime.m; el.inSec.value = s.defTime.s;
+            if (!saved) {el.inHr.value = 0; el.inMin.value = 0; el.inSec.value = 5;
+            } else {el.inHr.value = s.defTime.h; el.inMin.value = s.defTime.m; el.inSec.value = s.defTime.s;
+            }
             applyTheme(el.cfgTheme.value); renderLogs(); updateFocusUI();
         }
 
