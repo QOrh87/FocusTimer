@@ -370,6 +370,42 @@
         }
     .highlight-text {
     color: var(--accent-color);}
+
+                /* ★PCではボタンを隠す */
+.mobile-start-btn { display: none; }
+@media (pointer: coarse) and (max-width: 768px) {
+    /* スマホではガイドを隠し、ボタンを表示 */
+    #key-guide, #pc-guide { display: none !important; }
+    .mobile-start-btn {
+        display: block;
+        width: 100%;
+        margin-top: 15px;
+        padding: 12px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        background: transparent;
+        /* テーマの色と連動 */
+        border: 2px solid var(--text-color);
+        color: var(--text-color);
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    .mobile-start-btn:active {
+        opacity: 0.6; /* タップした瞬間のフィードバック */
+    }
+    /* 入力欄のサイズアップ（タップミス防止） */
+    .time-input-container input {
+        width: 70px !important; 
+        height: 50px !important;
+        font-size: 2rem !important;
+        text-align: center;
+    }
+    /* コロン「:」の調整 */
+    .time-separator {
+        font-size: 1.5rem;
+        margin: 0 5px;
+    }
+}
         
     </style>
 </head>
@@ -505,9 +541,9 @@
             </div>
 
             <div class="input-group">
-                <input type="number" id="in-hr" value="0"> <span class="label">時間</span>
-                <input type="number" id="in-min" value="25"> <span class="label">分</span>
-                <input type="number" id="in-sec" value="0"> <span class="label">秒</span>
+                <input type="number" id="in-hr" value="0" inputmode="decimal"> <span class="label">時間</span>
+                <input type="number" id="in-min" value="25" inputmode="decimal"> <span class="label">分</span>
+                <input type="number" id="in-sec" value="0" inputmode="decimal"> <span class="label">秒</span>
             </div>
             <input type="text" id="in-task" placeholder="メモ" spellcheck="false">
             
@@ -515,6 +551,7 @@
                 設定：<span class="highlight-text">[Enter] 開始</span> / [←→]項目移動 / [↑↓]数値増減<br>
                 作動中：[Space]一時停止 / 終了時：操作で音停止 → もう一度操作で戻る
             </div>
+            <button id="mobile-start-btn" class="mobile-start-btn" onclick="if(!isActive) startTimer()">▶ START</button>
         </div>
 
         <div id="timer-view">
@@ -614,6 +651,8 @@
             el.cfgFull.checked = s.full; el.cfgTheme.value = s.theme || 'default';
             el.defHr.value = s.defTime.h; el.defMin.value = s.defTime.m; el.defSec.value = s.defTime.s;
             if (!saved) {el.inHr.value = 0; el.inMin.value = 0; el.inSec.value = 5;
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);//★スマホは芝生
+                if (isMobile) {el.cfgTheme.value = 'leaf';applyTheme('leaf');}
             } else {el.inHr.value = s.defTime.h; el.inMin.value = s.defTime.m; el.inSec.value = s.defTime.s;
             }
             applyTheme(el.cfgTheme.value); renderLogs(); updateFocusUI();
