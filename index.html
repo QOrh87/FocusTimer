@@ -5,7 +5,7 @@
 <script>
   if (window.location.search.includes('admin=QOrh')) {
       localStorage.setItem('exclude_ga', 'true');
-      alert('管理者モード：計測を除外しました'); // 成功したか確認用
+      alert('管理者モード：計測を除外しました');
   }
   const isAdmin = localStorage.getItem('exclude_ga');
   if (isAdmin !== 'true') {
