@@ -17,6 +17,7 @@
       console.log("Analyticsは停止中です（管理者）");
   }
 </script>
+<meta name="theme-color" content="#1a1a1a">
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -715,6 +716,8 @@
             document.documentElement.style.setProperty('--panel-bg', theme.panel);
             document.documentElement.style.setProperty('--accent-color', theme.accent);
         }
+document.querySelector('meta[name="theme-color"]').setAttribute('content', theme.bg);
+}
 
         function saveSettings() {
             const settings = {
