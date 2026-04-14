@@ -4,8 +4,8 @@
   "description": "シンプルで美しいデザインの作業用タイマー。",
   "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#1a1a1a",
-  "theme_color": "#1a1a1a",
+  "background_color": "#4a4d4f",
+  "theme_color": "#4a4d4f",
   "icons": [
     {
       "src": "icon-192.png",
