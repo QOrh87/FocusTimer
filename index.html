@@ -2,30 +2,24 @@
 <html lang="ja">
 <head>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-H7SKTD4WF8"></script>
-<script>
-  if (window.location.search.includes('admin=QOrh')) {
-      localStorage.setItem('exclude_ga', 'true');
-      alert('管理者モード：計測を除外しました');
-  }
-  const isAdmin = localStorage.getItem('exclude_ga');
-  if (isAdmin !== 'true') {
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-H7SKTD4WF8');
-  } else {
-      console.log("Analyticsは停止中です（管理者）");
-  }
-</script>
-<meta name="theme-color" content="#f2f2f0">
+    <script>
+        if (window.location.search.includes('admin=QOrh')) {localStorage.setItem('exclude_ga', 'true'); alert('管理者モード：計測を除外しました');}
+        const isAdmin = localStorage.getItem('exclude_ga');
+        if (isAdmin !== 'true') {window.dataLayer = window.dataLayer || [];
+                                 function gtag(){dataLayer.push(arguments);}
+                                 gtag('js', new Date());
+                                 gtag('config', 'G-H7SKTD4WF8');
+        } else {console.log("Analyticsは停止中です（管理者）");}    
+    </script>
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "勉強タイマー Focus Timer Pro", "url": "https://focus-timer-pro.com/"}
+    </script>
     
+    <meta name="theme-color" content="#f2f2f0">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Focus Timer Pro｜パソコンブラウザで動くインストール不要の無料タイマー（Webアプリ）</title>
-    
-    <meta name="description" content="シンプルなデザインのタイマーです。少ない操作で'即'作業に取り掛かれます。「フルスクリーン」「秒数を繰り上げ表示」などのカスタマイズが可能です。履歴管理で振り返りができ、あなたの作業や勉強の効率を最大化します。スマホ利用やポモドーロテクニックにも対応しています。">
+    <title>勉強タイマー｜Focus Timer Pro </title> 
+    <meta name="description" content="スマホ・PCで動くシンプルで洗練されたタイマーです。少ない操作で'即'作業に取り掛かれます。「フルスクリーン」「秒数を繰り上げ表示」などのカスタマイズが可能です。履歴管理で振り返りができ、あなたの作業や勉強の効率を最大化します。ポモドーロテクニックにも対応しています。">
     <meta name="keywords" content=" 勉強, タイマー, フルスクリーン, 作業用, 集中持続, ポモドーロ, シンプル, 無料ツール">
-    
     <meta property="og:title" content="勉強・作業用に最適なポモドーロタイマー">
     <meta property="og:description" content="集中力を高めるための究極のシンプルタイマー。">
     <meta property="og:type" content="website">
@@ -33,7 +27,7 @@
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    
+        
     <style>
         .visually-hidden {
             position: absolute;
