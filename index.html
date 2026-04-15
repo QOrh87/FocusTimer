@@ -495,10 +495,10 @@
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal('modal-privacy')">×</span>
             <h2>プライバシーポリシー</h2>
-            <h3>広告の配信について</h3>
-            <p>当サイトでは、第三者配信の広告サービス「Google アドセンス」を利用しています。広告配信事業者は、ユーザーの興味に応じた広告を表示するためにCookieを使用することがあります。</p>
             <h3>データの保存について</h3>
             <p>本アプリで入力されたタスク名やタイマーの履歴、設定情報は、すべてお客様のブラウザ内（Local Storage）にのみ保存されます。サーバーへ送信されることはありません。</p>
+            <h3>Cookieについて</h3>
+            <p>当サイトでは、第三者配信の広告サービス「Google アドセンス」や「Google Analytics」を利用しています。ユーザーの興味に応じた広告を表示するために、またユーザー体験の向上のために、Cookieを使用することがあります。</p>
             <h3>免責事項</h3>
             <p>本アプリの利用により生じた損害について、開発者は一切の責任を負いません。コンテンツは予告なしに変更・削除されることがあります。あらかじめご了承ください。</p>
         </div>
@@ -522,7 +522,7 @@
 
     <div id="log-side-panel">
         <div class="log-header">
-            <span>FOCUS HISTORY (MAX 400)</span>
+            <span>履歴 (最大 400)</span>
             <button class="btn-clear-all" onclick="clearAllLogs()">CLEAR</button>
         </div>
         <div id="log-list"></div>
@@ -548,8 +548,9 @@
                             <option value="standard">Beep</option>
                             <option value="retro-alarm">レトロ</option>
                             <option value="digital-chime">チャイム</option>
-                            <option value="old-bell">ベル</option>
+                            <option value="old-bell">風鈴</option>
                             <option value="retro-up">アップ</option>
+                            <option value="sapporo-bell">時計台</option>
                         </select>
                         <label class="switch"><input type="checkbox" id="cfg-alarm"><span class="slider"></span></label>
                     </div>
@@ -951,21 +952,99 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
             alarmInterval = setTimeout(() => {
             isAlarmPlaying = false; 
             clearInterval(alarmRepeatTimer);}, (parseInt(el.cfgAlarmDur.value) || 5) * 1000);}
+
+        function playSapporoBell(ctx) {
+            const now = ctx.currentTime;
+            const tones = [
+                { freq: 220, gain: 0.3, decay: 4.0 }, 
+                { freq: 442, gain: 0.15, decay: 3.5 }, 
+                { freq: 665, gain: 0.1, decay: 3.0 }, 
+                { freq: 880, gain: 0.05, decay: 2.0 }, 
+                { freq: 100, gain: 0.02, decay: 4.5 }  
+            ];
+            tones.forEach(t => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(t.freq, now);
+                gain.gain.setValueAtTime(0, now);
+                gain.gain.linearRampToValueAtTime(t.gain, now + 0.01); 
+                gain.gain.exponentialRampToValueAtTime(0.001, now + t.decay); 
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + t.decay);
+            });
+        }
+
+        function playFuurin(ctx) {
+            const t = ctx.currentTime;
+            const hitCount = Math.floor(Math.random() * 2) + 2;
+            for (let i = 0; i < hitCount; i++) {
+                const delay = i === 0 ? 0 : Math.random() * 0.8;
+                const startTime = t + delay;
+                const velocity = 0.02 + Math.random() * 0.04;
+                const baseFreq = 2960 + (Math.random() * 20 - 10); 
+                const partials = [
+                    { mult: 1.0,   g: 1.0,  d: 4.5 }, 
+                    { mult: 1.002, g: 0.6,  d: 3.5 }, 
+                    { mult: 1.49,  g: 0.5,  d: 2.5 }, 
+                    { mult: 2.11,  g: 0.3,  d: 1.5 }, 
+                    { mult: 3.25,  g: 0.2,  d: 0.8 } 
+                ];
+                partials.forEach((p) => {
+                    const osc = ctx.createOscillator();
+                    const gainNode = ctx.createGain(); 
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(baseFreq * p.mult, startTime);
+                    gainNode.gain.setValueAtTime(0, startTime);
+                    const peakGain = velocity * p.g;
+                    gainNode.gain.linearRampToValueAtTime(peakGain, startTime + 0.005); 
+                    gainNode.gain.exponentialRampToValueAtTime(0.00001, startTime + p.d);
+                    osc.connect(gainNode);
+                    gainNode.connect(ctx.destination);
+                    osc.start(startTime);
+                    osc.stop(startTime + p.d);
+                });
+            }
+        }
+
+        function playVintageDigital(ctx) {
+            const t = ctx.currentTime;
+            const freq = 3840; 
+            const pattern = [
+                0, 0.2, 0.4, 
+                0.8, 1.0, 1.2 
+            ];
+            pattern.forEach(delay => {
+                const startTime = t + delay;
+                const duration = 0.08; 
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(freq, startTime);
+                gain.gain.setValueAtTime(0, startTime);
+                gain.gain.setValueAtTime(0.03, startTime);
+                gain.gain.setValueAtTime(0, startTime + duration);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(startTime);
+                osc.stop(startTime + duration + 0.01);
+            });
+        }
         
         async function playAlarmSound() {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             if (audioCtx.state === 'suspended') await audioCtx.resume();
             const type = el.cfgAlarmType.value, now = audioCtx.currentTime;
+            if (type === 'sapporo-bell') {playSapporoBell(audioCtx);return;
+            }
             if (type === 'standard') {
                 const osc = audioCtx.createOscillator(), gain = audioCtx.createGain(); osc.type = 'sine'; osc.frequency.setValueAtTime(880, now);
                 gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 1);
                 osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(now + 1);
             } else if (type === 'retro-alarm') {
-                for(let i=0; i<3; i++){
-                    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain(); osc.type = 'square'; osc.frequency.setValueAtTime(440, now + i*0.5);
-                    gain.gain.setValueAtTime(0.05, now + i*0.5); gain.gain.setValueAtTime(0, now + i*0.5 + 0.2);
-                    osc.connect(gain); gain.connect(audioCtx.destination); osc.start(now + i*0.5); osc.stop(now + i*0.5 + 0.2);
-                }
+                playVintageDigital(audioCtx);
             } else if (type === 'digital-chime') {
                 [659, 523].forEach((f, i) => {
                     const osc = audioCtx.createOscillator(), gain = audioCtx.createGain(); osc.frequency.setValueAtTime(f, now + i*0.3); gain.gain.setValueAtTime(0.1, now + i*0.3);
@@ -973,13 +1052,25 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
                     osc.connect(gain); gain.connect(audioCtx.destination); osc.start(now + i*0.3); osc.stop(now + i*0.3 + 0.5);
                 });
             } else if (type === 'old-bell') {
-                const osc = audioCtx.createOscillator(), gain = audioCtx.createGain(); osc.type = 'sawtooth'; osc.frequency.setValueAtTime(1200, now); osc.frequency.exponentialRampToValueAtTime(400, now + 0.4);
-                gain.gain.setValueAtTime(0.05, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
-                osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(now + 0.4);
+                playFuurin(audioCtx);
             } else if (type === 'retro-up') {
-                const osc = audioCtx.createOscillator(), gain = audioCtx.createGain(); osc.frequency.setValueAtTime(200, now); osc.frequency.linearRampToValueAtTime(800, now + 0.3);
-                gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-                osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(now + 0.3);
+                const t = audioCtx.currentTime; 
+                const freqs = [392, 523]; 
+                const duration = 0.4;
+                freqs.forEach((baseFreq) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(baseFreq, t);
+                    osc.frequency.exponentialRampToValueAtTime(baseFreq * 2, t + duration);
+                    gain.gain.setValueAtTime(0, t);
+                    gain.gain.linearRampToValueAtTime(0.1, t + 0.05); 
+                    gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(t);
+                    osc.stop(t + duration);
+                });
             }
         }
 
