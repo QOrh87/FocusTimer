@@ -965,9 +965,12 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
 
         let alarmRepeatTimer;
         function triggerAlarmCycle() { if (!isAlarmPlaying) return; playAlarmSound(); 
+            const intervalTime = el.cfgAlarmType.value === 'sapporo-bell' ? 3500 : 2000;
             alarmRepeatTimer = setInterval(() => {
-                if (isAlarmPlaying) {playAlarmSound();} else {clearInterval(alarmRepeatTimer);}
-            }, 2000);
+                if (isAlarmPlaying) {playAlarmSound();
+                } else {clearInterval(alarmRepeatTimer);
+                       }
+            }, intervalTime);
             alarmInterval = setTimeout(() => {
             isAlarmPlaying = false; 
             clearInterval(alarmRepeatTimer);}, (parseInt(el.cfgAlarmDur.value) || 5) * 1000);}
