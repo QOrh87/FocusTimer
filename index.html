@@ -1156,7 +1156,7 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
         };
 
         el.menuTrigger.onclick = (e) => { e.stopPropagation(); el.menuDropdown.style.display = el.menuDropdown.style.display === 'block' ? 'none' : 'block'; el.cfgPanel.style.display = 'none'; el.logSidePanel.style.display = 'none'; };
-        el.cfgTrigger.onclick = (e) => { e.stopPropagation(); el.cfgPanel.style.display = el.cfgPanel.style.display === 'block' ? 'none' : 'block'; el.menuDropdown.style.display = 'none'; if (el.cfgPanel.style.display === 'block') el.defMin.focus(); updateFocusUI(); };
+        el.cfgTrigger.onclick = (e) => { e.stopPropagation(); el.cfgPanel.style.display = el.cfgPanel.style.display === 'block' ? 'none' : 'block'; el.menuDropdown.style.display = 'none'; if (el.cfgPanel.style.display === 'block') if (el.cfgPanel.style.display === 'block' && !isMobile) {el.defMin.focus();} updateFocusUI(); };
         el.logTrigger.onclick = (e) => { e.stopPropagation(); el.logSidePanel.style.display = el.logSidePanel.style.display === 'block' ? 'none' : 'block'; el.menuDropdown.style.display = 'none'; if(el.logSidePanel.style.display === 'block') renderLogs(); };
         
         document.onclick = () => { if (isAlarmPlaying) { stopAlarm(); return; } el.cfgPanel.style.display = 'none'; el.menuDropdown.style.display = 'none'; updateFocusUI(); };
