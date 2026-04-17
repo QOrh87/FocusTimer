@@ -962,7 +962,12 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
 
         let alarmRepeatTimer;
         function triggerAlarmCycle() { if (!isAlarmPlaying) return; playAlarmSound(); 
-            const intervalTime = el.cfgAlarmType.value === 'sapporo-bell' ? 3500 : 2000;
+            const intervals = { 
+                'retro-alarm': 3200,
+                'old-bell': 4500,
+                'sapporo-bell': 3500
+            };
+            const intervalTime = intervals[el.cfgAlarmType.value] || 2200;
             alarmRepeatTimer = setInterval(() => {
                 if (isAlarmPlaying) {playAlarmSound();
                 } else {clearInterval(alarmRepeatTimer);
