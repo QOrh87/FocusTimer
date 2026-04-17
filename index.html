@@ -564,12 +564,12 @@
                     <span id="label-alarm">終了アラーム</span>
                     <div class="config-row-right">
                         <select id="cfg-alarm-type" class="mini-select">
-                            <option value="standard">Beep</option>
-                            <option value="retro-alarm">レトロ</option>
-                            <option value="digital-chime">チャイム</option>
-                            <option value="old-bell">風鈴</option>
-                            <option value="retro-up">アップ</option>
-                            <option value="sapporo-bell">時計台</option>
+                            <option id="opt-alarm-standard" value="standard">Beep</option>
+                            <option id="opt-alarm-retro" value="retro-alarm">レトロ</option>
+                            <option id="opt-alarm-chime" value="digital-chime">チャイム</option>
+                            <option id="opt-alarm-old-bell" value="old-bell">風鈴</option>
+                            <option id="opt-alarm-up" value="retro-up">アップ</option>
+                            <option id="opt-alarm-sapporo" value="sapporo-bell">時計台</option>
                         </select>
                         <label class="switch"><input type="checkbox" id="cfg-alarm"><span class="slider"></span></label>
                     </div>
@@ -681,6 +681,12 @@
             theme: isJa ? 'テーマカラー' : 'Theme Color',
             alarmDur: isJa ? 'アラーム持続時間' : 'Alarm Duration',
             defTime: isJa ? 'デフォルト時間の変更' : 'Default Timer',
+            alarmStandard: isJa ? 'Beep' : 'Beep',
+            alarmRetro:    isJa ? 'レトロ' : 'Electric',
+            alarmChime:    isJa ? 'チャイム' : 'Chime',
+            alarmOldBell:  isJa ? '風鈴' : 'Zen Wind Chime',
+            alarmUp:       isJa ? 'アップ' : 'Rising',
+            alarmSapporo:  isJa ? '時計台' : 'Clock Tower',
             themeDefault: isJa ? 'Standard' : 'Standard',
             themeSakura:  isJa ? '桜' : 'Sakura',
             themeForest:  isJa ? '森' : 'Forest',
@@ -736,6 +742,12 @@
                 'label-alarm-dur': i18n.alarmDur,
                 'label-def-time': i18n.defTime,
                 'mobile-start-btn': i18n.start,
+                'opt-alarm-standard': i18n.alarmStandard,
+                'opt-alarm-retro':    i18n.alarmRetro,
+                'opt-alarm-chime':    i18n.alarmChime,
+                'opt-alarm-old-bell': i18n.alarmOldBell,
+                'opt-alarm-up':       i18n.alarmUp,
+                'opt-alarm-sapporo':  i18n.alarmSapporo,
                 'opt-theme-default': i18n.themeDefault,
                 'opt-theme-sakura':  i18n.themeSakura,
                 'opt-theme-forest':  i18n.themeForest,
