@@ -25,6 +25,9 @@
     <meta property="og:title" content="勉強・作業用に最適なポモドーロタイマー">
     <meta property="og:description" content="集中力を高めるための究極のシンプルタイマー。">
     <meta property="og:type" content="website">
+    <link rel="alternate" hreflang="ja" href="https://focus-timer-pro.com/" />
+    <link rel="alternate" hreflang="en" href="https://focus-timer-pro.com/?lang=en" />
+    <link rel="alternate" hreflang="x-default" href="https://focus-timer-pro.com/" />
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/icon.png" type="image/png">
@@ -661,7 +664,8 @@
             ocean:   { bg: '#021a1e', panel: '#032c33', accent: '#035162', pattern: ['#00d2ff', '#3a7bd5'] }  
         };
 
-        const isJa = navigator.language.startsWith('ja');
+        const urlParams = new URLSearchParams(window.location.search);
+        const isJa = urlParams.get('lang') === 'en' ? false : navigator.language.startsWith('ja');
         const i18n = {
             h: isJa ? '時間' : 'hr',
             m: isJa ? '分' : 'min',
@@ -711,6 +715,16 @@
         };
 
         window.addEventListener('DOMContentLoaded', () => {
+            const pageTitle = isJa 
+                ? "勉強タイマー｜Focus Timer Pro" 
+                : "Focus Timer Pro | Minimalist Study & Task Timer (Web App)";
+            const pageDesc = isJa 
+                ? "「勉強タイマー」は、スマホやPCで素早く作業を開始できる無料のWebアプリです。フルスクリーン表示や秒数の繰り上げなど、集中を妨げないカスタマイズ機能が充実。履歴管理で日々の積み上げを可視化し、勉強効率を最大化します。ポモドーロ・テクニックも対応。" 
+                : "Focus Timer Pro is a free, minimalist web app for instant focus. Boost productivity with full-screen mode, unique 'round-up seconds,' and progress tracking. Perfect for Pomodoro on any device.";
+            document.title = pageTitle;
+            const metaDesc = document.querySelector('meta[name="description"]');
+            if (metaDesc) metaDesc.content = pageDesc;
+            document.documentElement.lang = isJa ? 'ja' : 'en';
             const ids = {
                 'unit-h': i18n.h, 'unit-m': i18n.m, 'unit-s': i18n.s,
                 'def-unit-h': i18n.h, 'def-unit-m': i18n.m, 'def-unit-s': i18n.s,
