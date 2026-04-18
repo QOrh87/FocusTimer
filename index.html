@@ -541,7 +541,7 @@
 
     <div id="log-side-panel">
         <div class="log-header">
-            <span>履歴 (最大 400)</span>
+            <span id="log-panel-title">履歴 (最大 400)</span>
             <button class="btn-clear-all" onclick="clearAllLogs()">CLEAR</button>
         </div>
         <div id="log-list"></div>
@@ -675,6 +675,11 @@
             guide: isJa ? '設定：<span class="highlight-text">[Enter] 開始</span> / [←→] 項目移動 / [↑↓] 調整<br>作動中：[Space] 一時停止 / [Esc] 中断' : 'Settings: <span class="highlight-text">[Enter] Start</span> / [←→] Select / [↑↓] Adjust<br>Running: [Space] Pause / [Esc] Reset',
             memo: isJa ? 'メモ' : 'Task',
             start: isJa ? '▶開始' : '▶START',
+            tipConfig: isJa ? '詳細設定' : 'Settings',
+            tipLog:    isJa ? '履歴を表示/非表示' : 'Show/Hide Log',
+            tipIdea:   isJa ? '設計思想' : 'Philosophy',
+            tipMenu:   isJa ? 'メニュー' : 'Menu',
+            logTitle:  isJa ? '履歴（最大 400）' : 'Log (Max 400)',
             full: isJa ? '自動フルスクリーン' : 'Auto Fullscreen',
             showSec: isJa ? '秒単位で表示' : 'Show Seconds',
             alarm: isJa ? '終了アラーム' : 'Alarm Sound',
@@ -755,11 +760,23 @@
                 'opt-theme-sun':     i18n.themeSun,
                 'opt-theme-orange':  i18n.themeOrange,
                 'opt-theme-ocean':   i18n.themeOcean
+                'log-panel-title': i18n.logTitle,
             };
             for (const [id, text] of Object.entries(ids)) {
                 const target = document.getElementById(id); 
                 if (target) target.textContent = text;
             }
+            const tooltips = {
+                'config-trigger': i18n.tipConfig,
+                'log-trigger': i18n.tipLog,
+                'philosophy-trigger': i18n.tipIdea,
+                'menu-trigger': i18n.tipMenu
+            };
+            for (const [id, text] of Object.entries(tooltips)) {
+                const target = document.getElementById(id);
+                if (target) target.title = text;
+            }
+
             const pcGuideEl = document.getElementById('pc-guide');
             if (pcGuideEl) pcGuideEl.innerHTML = i18n.guide;
             if (el.inTask) el.inTask.placeholder = i18n.memo;
