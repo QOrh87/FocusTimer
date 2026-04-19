@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-H7SKTD4WF8"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5003047696195120"
+     crossorigin="anonymous"></script>
+    <script>
+        if (window.location.search.includes('admin=QOrh')) {localStorage.setItem('exclude_ga', 'true'); alert('管理者モード：計測を除外しました');}
+        const isAdmin = localStorage.getItem('exclude_ga');
+        if (isAdmin !== 'true') {window.dataLayer = window.dataLayer || [];
+                                 function gtag(){dataLayer.push(arguments);}
+                                 gtag('js', new Date());
+                                 gtag('config', 'G-H7SKTD4WF8');
+        } else {console.log("Analyticsは停止中です（管理者）");}    
+    </script>
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "Focus Timer Pro", "url": "https://focus-timer-pro.com/en/"}
+    </script>
+    
+    <meta name="theme-color" content="#f2f2f0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Focus Timer Pro | Simple & Minimalist Study Timer</title> 
+    <meta name="description" content="Focus Timer Pro is a free, minimalist tool designed for study and deep work. Enhance your productivity with distraction-free full-screen mode, unique 'round-up seconds', and detailed progress logs. Start focusing instantly on any device.">
+    <meta name="keywords" content=" 勉強, タイマー, フルスクリーン, 作業用, 集中持続, ポモドーロ, シンプル, 無料ツール">
+    <meta property="og:title" content="勉強タイマー｜Focus Timer Pro">
+    <meta property="og:description" content="スマホやPCで素早く作業を開始できる無料のWebアプリ">
+    <meta property="og:type" content="website">
+    <link rel="canonical" href="https://focus-timer-pro.com/">
+    <link rel="alternate" hreflang="ja" href="https://focus-timer-pro.com/" />
+    <link rel="alternate" hreflang="en" href="https://focus-timer-pro.com/?lang=en" />
+    <link rel="alternate" hreflang="x-default" href="https://focus-timer-pro.com/" />
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic&family=Zen+Kaku+Gothic+New&display=swap" rel="stylesheet">
+        
+    <style>
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        :root {
+            --bg-color: #1a1a1a;
+            --panel-bg: #2a2a2a;
+            --text-color: #e0e0e0;
+            --accent-color: #007bff;
+            --pause-color: #FDFD96;
+            --sub-text: #888;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family:"UD Digi Kyokasho N-R", "UD デジタル 教科書体 N-R", "UD Digi Kyokasho NK-R", 'Zen Kaku Gothic New', 'BIZ UDPGothic', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            cursor: default;
+            transition: background-color 0.5s, color 0.5s;
+        }
+
+        #main-container {
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .settings-view {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            align-items: center;
+            position: relative;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: baseline;
+            gap: 15px;
+        }
+
+        input[type="number"], input[type="text"] {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid #444;
+            color: white;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"] { font-size: 48px; width: 18vw; min-width:60px; max-width:90px; font-variant-numeric: tabular-nums; }
+        input[type="text"] { width: 350px; font-size: 24px; }
+        
+        input.active-focus {
+            border-bottom-color: var(--accent-color) !important;
+            border-bottom-width: 3px;
+        }
+
+        input:focus { border-bottom-color: var(--accent-color); }
+
+        .label { font-size: 14px; color: var(--sub-text); margin-left: 5px; }
+
+        .controls-top-right {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 20px;
+            z-index: 110;
+            align-items: center;
+            height: 32px; 
+        }
+        .panel-trigger {
+            cursor: pointer;
+            font-size: 25px;
+            opacity: 0.15;
+            color: var(--text-color);
+            transition: opacity 0.4s, color 0.4s;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px; 
+            width: 7px;
+            height: 100%;
+            line-height: 1; 
+        }
+        .panel-trigger:hover { 
+            opacity: 0.8; 
+            color: var(--accent-color);
+        }
+
+        .menu-container {
+            position: relative;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+        #menu-dropdown {
+            display: none;
+            position: absolute;
+            top: 40px;
+            right: 0;
+            background: var(--panel-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            width: 180px; 
+            overflow: hidden;
+            z-index: 120;
+        }
+        .menu-item {
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #ccc;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            text-align: left;
+            white-space: nowrap;
+        }
+        .menu-item:hover {
+            background: rgba(255,255,255,0.05);
+            color: var(--accent-color);
+        }
+
+        #config-panel {
+            display: none;
+            position: fixed;
+            top: 65px; 
+            right: 20px;
+            background: var(--panel-bg);
+            padding: 20px;
+            border-radius: 12px;
+            z-index: 100;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: left; 
+            min-width: 320px;
+        }
+        
+        #log-side-panel {
+            display: none; 
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 260px;
+            max-height: 80vh;
+            background: rgba(42, 42, 42, 0.4); 
+            backdrop-filter: blur(4px);
+            padding: 15px;
+            border-radius: 12px;
+            z-index: 90;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            text-align: left;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: var(--panel-bg);
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            padding: 40px;
+            border-radius: 20px;
+            overflow-y: auto;
+            position: relative;
+            text-align: left;
+            line-height: 1.8;
+            font-size: 14px;
+            color: #ccc;
+        }
+        .modal-content h1 {
+            font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+            letter-spacing: -0.12em;
+            line-height: 1.4;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
+        .modal-content h2 { color: var(--text-color); margin-top: 0; border-left: 4px solid var(--accent-color); padding-left: 15px; }
+        .modal-content h3 { color: var(--text-color); font-size: 16px; margin-top: 25px; }
+        .close-modal {
+            position: absolute; top: 20px; right: 20px;
+            font-size: 24px; cursor: pointer; color: var(--sub-text);
+        }
+
+        .config-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 13px;
+            min-height: 32px;
+        }
+
+        .config-sub-label { display: block; color: var(--sub-text); font-size: 11px; margin-bottom: 5px; }
+
+        #timer-view { display: none; }
+        #countdown-display {
+            font-size: clamp(60px, 15vw, 180px);
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            font-family: Arial, 'Inter', 'Segoe UI', Roboto Mono, Helvetica, sans-serif;
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.3s, opacity 0.3s;
+        }
+
+        #info-overlay {
+            position: fixed;
+            bottom: 30px; right: 40px;
+            text-align: right;
+            display: none;
+            z-index: 2000;
+        }
+        .stopwatch { font-size: 16px; color: #555; font-family: monospace; }
+        
+        #result-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: none;
+            z-index: 1000; cursor: pointer;
+            background-color: rgba(0,0,0,0);
+            transition: background-color 300s linear;
+        }
+        canvas#pattern-canvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1001;
+            opacity: 0;
+            transition: opacity 10s ease-in;
+        }
+
+        .log-header {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 11px; font-weight: bold; margin-bottom: 10px;
+            color: var(--sub-text); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;
+        }
+        .log-entry {
+            position: relative; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+            line-height: 1.3; font-size: 11px; color: rgba(224, 224, 224, 0.8);
+        }
+        .log-entry:hover { color: #fff; }
+        .log-entry:hover .btn-delete { opacity: 1; }
+        .log-meta { display: flex; justify-content: space-between; margin-top: 3px; font-size: 10px; color: #555; }
+        .log-status-comp {  background: rgba(40, 167, 69, 0.25);  color: #85ffad;  font-weight: bold;}
+        .log-status-abort {  background: rgba(255, 193, 7, 0.2);  color: #ffd95b;   font-weight: bold;}
+       
+        .btn-delete {
+            opacity: 0; background: none; border: none; color: #ff4d4d;
+            cursor: pointer; font-size: 10px; padding: 2px 5px; transition: opacity 0.2s;
+        }
+        .btn-clear-all {
+            background: rgba(255,255,255,0.05); color: #777; border: none; border-radius: 4px;
+            font-size: 9px; cursor: pointer; padding: 2px 6px;
+        }
+        .btn-clear-all:hover { background: rgba(255,255,255,0.1); color: #ccc; }
+
+        .switch { position: relative; display: inline-block; width: 34px; height: 20px; flex-shrink: 0; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #444; transition: .4s; border-radius: 20px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 14px; width: 14px;
+            left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--accent-color); }
+        input:checked + .slider:before { transform: translateX(14px); }
+
+        .mini-input, .mini-select {
+            background: #1a1a1a; border: 1px solid #444; color: white;
+            border-radius: 4px; padding: 2px 4px; font-size: 12px; outline: none;
+        }
+        .mini-input { width: 38px; text-align: center; }
+        .mini-select { width: 110px; cursor: pointer; height: 24px; }
+
+        .config-row-right { display: flex; align-items: center; gap: 8px; }
+
+        .ad-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            min-height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+            z-index: 5;
+        }
+        .ad-container:hover { opacity: 1; }
+        
+        body:has(#timer-view[style*="display: block"]) .ad-container,
+        body:has(#result-screen[style*="display: flex"]) .ad-container,
+        body:has(#timer-view[style*="display: block"]) .controls-top-right,
+        body:has(#result-screen[style*="display: flex"]) .controls-top-right {
+            display: none !important;
+        }
+
+        .info-section h3 { display: flex; align-items: center; gap: 8px; }
+        @media (max-width: 600px) {
+            #countdown-display { font-size: 22vw !important; }
+            
+            #log-side-panel { 
+                width: calc(100% - 40px) !important; 
+                max-width: none; 
+                left: 20px; 
+                right: 20px; 
+            }
+            
+            #config-panel {
+                width: calc(100% - 40px);
+                left: 20px;
+                right: 20px;
+                min-width: 0;
+            }
+
+            .controls-top-right { gap: 10px; }
+            .panel-trigger { font-size: 18px; }
+        }
+    .highlight-text {
+    color: var(--accent-color);}
+
+.mobile-start-btn { display: none; }
+@media (pointer: coarse) and (max-width: 768px), 
+       (pointer: coarse) and (max-height: 500px) and (orientation: landscape) {
+    #key-guide, #pc-guide { display: none !important; }
+    .mobile-start-btn {
+        display: block;
+        width: 100%;
+        margin-top: 20px;
+        padding: 15px;
+        font-size: 1.4rem;
+        font-weight: 300;
+        letter-spacing: 0.2em;
+        background: var(--bg-color); 
+        color: var(--text-color);
+        border: none; 
+        border-radius: 50px; 
+        box-shadow: 3px 3px 6px rgba(0,0,0,0.2), -3px -3px 6px rgba(255,255,255,0.05);
+        cursor: pointer;
+    }
+    .mobile-start-btn:active {
+        opacity: 0.6; 
+    }
+    #mobile-reset-btn {
+        display: block !important; 
+        position: fixed;
+        top: 10px;
+        right: 15px;
+        font-size: 16px;
+        color: var(--text-color);
+        opacity: 0.6;
+        padding: 15px; 
+        z-index: 100;
+        cursor: pointer;
+    }
+    .time-input-container input {
+        width: 70px !important; 
+        height: 50px !important;
+        font-size: 2rem !important;
+        text-align: center;
+    }
+    .time-separator {
+        font-size: 1.5rem;
+        margin: 0 5px;
+    }
+}
+#mobile-reset-btn { display: none; }
+.screenshot-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 20px 0;
+}
+.screenshot-container img {
+    border-radius: 8px;
+    border: 1px solid #444;
+    max-width: 45%; 
+    height: auto;
+}
+    </style>
+</head>
+<body>
+    <div class="controls-top-right">
+        <div class="menu-container">
+            <div id="menu-trigger" class="panel-trigger" title="メニュー" style="font-weight: bold;"> ⋮ </div>
+            <div id="menu-dropdown">
+                <div class="menu-item" onclick="openModal('modal-help')">使い方</div>
+                <div class="menu-item" onclick="openModal('modal-about')">アプリについて</div>
+                <div class="menu-item" onclick="openModal('modal-feedback')">フィードバック</div>
+                <div class="menu-item" onclick="openModal('modal-privacy')">プライバシーポリシー</div>
+            </div>
+        </div>
+        <div id="philosophy-trigger" class="panel-trigger" title="設計思想">💡</div>
+        <div id="log-trigger" class="panel-trigger" title="履歴を表示/非表示">📖</div>
+        <div id="config-trigger" class="panel-trigger" title="詳細設定">⚙️</div>
+    </div>
+
+    <div id="modal-about" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-about')">×</span>
+            <h1>勉強タイマー|作業・勉強を効率化する集中ツール</h1>
+            <p>ブラウザで動くシンプルで洗練されたタイマーです。最小の操作で素早く作業に取り掛かれます。履歴管理で振り返りが可能で、あなたの作業や勉強の効率を最大化します。</p>
+            <div class="screenshot-container">
+                <img src="https://raw.githubusercontent.com/QOrh87/FocusTimer/main/images/screenshot6.png" alt="設定画面">
+                <img src="https://raw.githubusercontent.com/QOrh87/FocusTimer/main/images/screenshot1.png" alt="終了画面">
+            </div>
+            <h2>特徴</h2>
+            <p> <b>・フルスクリーン対応</b>：　没入感のある表示で、余計な情報を遮断して作業に没頭できます<br><b>・洗練されたデザイン</b>：　集中状態を邪魔しない、ダークモードを基調としたUIデザイン<br><b>・勉強・仕事に最適</b>：　デフォルトの時間はポモドーロ・テクニックを意識した「25分」<br><b>・カスタマイズ可能なテーマ</b>：　気分に合わせて配色を変更可能<br><b>・履歴管理機能</b>：　毎日の作業ログを自動保存。振り返りに役立ててください。<br><b>・完全無料</b>：　全ての機能を無料でご利用いただけます。</p>
+        </div>
+    </div>
+    
+    <div id="modal-philosophy" class="modal-overlay">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('modal-philosophy')">×</span>
+        <h2>設計思想</h2>        
+        <h3>1. ポモドーロ・テクニック</h3>
+        <p>　人間の集中力は無限ではありません。私たちの体にはウルトラディアンリズムと呼ばれる約90分の覚醒周期の波が存在します。また、現代の高負荷な知的作業においては、これより短いサイクルでの調整が有効だと言われています。ポモドーロ・テクニックは、25分の作業と5分の休憩を繰り返すことで高いパフォーマンスを維持する技術です。このことを踏まえ、本アプリはデフォルトの集中の時間を25分に設定しましたが、個人の集中力に合わせた調整をして自由に使ってください。</p>
+        <h3>2. 5秒ルール</h3>
+        <p>　「やる気」がでるのを待つのは、多くの場合で意味がないことをほとんどの方が知っていると思います。そもそもこの受動的な姿勢では、脳内の扁桃体による不安や躊躇のブレーキが野放しになるため、ますます行動ができなくなってしまいます。行動心理学が提唱する「5秒ルール」は、やると決めたときに5秒からカウントダウンを行うことで、感情を司る領域から論理と実行を司る領域へ主導権を強制的に移行させる手法です。本アプリは、アプリを立ち上げて即開始ができるように様々な工夫をしています。意思決定してから脳が言い訳を始める前に作業に取り組みましょう!!</p>
+        <h3>3. 没頭の天敵</h3>
+        <p>　自閉スペクトラム症（ASD）やADHDの特性を持つ人は、周囲のわずかなノイズや視覚的な過負荷によって、容易に認知資源（脳のリソース）が消費されます。この認知資源の枯渇が、タスク切り替えや時間把握といった実行機能を低下させます。本アプリのシンプルなデザインや、あえて秒数を切り上げて表示する設計は、視覚から入る情報の制限と脳のワーキングメモリの節約を通じて、ユーザーの環境調整に貢献します。</p>
+        <h3>4. 「Human-in-the-loop」</h3>
+        <p>　本アプリは、チャッピー（ChatGPT）の記事に感化されたZ世代の大学生がジェミニで作りました。単純なタイマーは最初の数回の指示ですぐに完成しました。しかし、そこからデザインや使い勝手（UI）を好みの形に変えてゆく工程では、AIと何十回もやり取りをする必要がありました。AIに全部を任せるのではなく、方針や最終決定に人間が口出しすることを、専門用語で「ヒューマン・イン・ザ・ループ」と呼ぶそうです。意図が伝わらないことに対する歯がゆさもありましたが、AIが一瞬でコードを生成する様は圧巻でした。皆さんもAIをパートナーにしてオリジナルのツールを作ってみてはいかがでしょうか？（おわり）</p>
+        </div>
+    </div>
+
+    <div id="modal-help" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-help')">×</span>
+            <h2>使い方</h2>
+            <h3>1. タイマーを設定する</h3>
+            <p>中央の数字をクリックまたは [←][→] キーで「時間」「分」「秒」を選択し、直接入力または [↑][↓] キーで時間を設定します。</p>
+            <h3>2. タスクを入力する</h3>
+            <p>「メモ」に取り組む内容を入力します。タイマー作動中に画面右下に表示され、集中力を取り戻すのに役立ちます。</p>
+            <h3>3. スタートと操作</h3>
+            <p>[Enter] キーで開始します。作動中は [Space] キーで一時停止、[Esc] キーでリセットが可能です。</p>
+            <h3>4. 終了とログ</h3>
+            <p>時間が来るとアラーム（設定でオンの場合）とアニメーションが流れます。完了したタスクは自動的に履歴（📖）に保存されます。タイマー終了後もストップウォッチは動いているので、作業を続けることも可能です。</p>
+        </div>
+    </div>
+
+    <div id="modal-privacy" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-privacy')">×</span>
+            <h2>プライバシーポリシー</h2>
+            <h3>データの保存について</h3>
+            <p>本アプリで入力されたタスク名やタイマーの履歴、設定情報は、すべてお客様のブラウザ内（Local Storage）にのみ保存されます。サーバーへ送信されることはありません。</p>
+            <h3>Cookieについて</h3>
+            <p>当サイトでは、第三者配信の広告サービス「Google アドセンス」や「Google Analytics」を利用しています。ユーザーの興味に応じた広告を表示するために、またユーザー体験の向上のために、Cookieを使用することがあります。</p>
+            <h3>免責事項</h3>
+            <p>本アプリの利用により生じた損害について、開発者は一切の責任を負いません。コンテンツは予告なしに変更・削除されることがあります。あらかじめご了承ください。</p>
+        </div>
+    </div>
+
+    <div id="modal-feedback" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-feedback')">×</span>
+            <div class="info-section">
+                <h3>お問い合わせ</h3>
+                <p>
+                    不具合報告、ご要望、その他のお問い合わせは以下のフォームより受け付けております。<br>
+                    <a href="https://forms.gle/K8UTLbAZ6Zv5ygpA7" target="_blank" rel="noopener noreferrer" style="color: #3498db; text-decoration: underline;">
+                        お問い合わせフォームを開く
+                    </a>
+                </p>
+            </div>
+            <hr>
+        </div>
+    </div>
+
+    <div id="log-side-panel">
+        <div class="log-header">
+            <span id="log-panel-title">履歴 (最大 400)</span>
+            <button class="btn-clear-all" onclick="clearAllLogs()">CLEAR</button>
+        </div>
+        <div id="log-list"></div>
+    </div>
+
+    <div id="main-container">
+        <div id="settings-view" class="settings-view">
+            <div id="config-panel">
+                <div class="config-item">
+                    <span id="label-full">自動フルスクリーン</span>
+                    <label class="switch"><input type="checkbox" id="cfg-fullscreen"><span class="slider"></span></label>
+                </div>
+
+                <div class="config-item">
+                    <span id="label-show-sec">秒単位で表示</span>
+                    <label class="switch"><input type="checkbox" id="cfg-show-sec"><span class="slider"></span></label>
+                </div>
+
+                <div class="config-item">
+                    <span id="label-alarm">終了アラーム</span>
+                    <div class="config-row-right">
+                        <select id="cfg-alarm-type" class="mini-select">
+                            <option id="opt-alarm-standard" value="standard">Beep</option>
+                            <option id="opt-alarm-retro" value="retro-alarm">レトロ</option>
+                            <option id="opt-alarm-chime" value="digital-chime">チャイム</option>
+                            <option id="opt-alarm-old-bell" value="old-bell">風鈴</option>
+                            <option id="opt-alarm-up" value="retro-up">アップ</option>
+                            <option id="opt-alarm-sapporo" value="sapporo-bell">時計台</option>
+                        </select>
+                        <label class="switch"><input type="checkbox" id="cfg-alarm"><span class="slider"></span></label>
+                    </div>
+                </div>
+
+                <div class="config-item">
+                    <span id="label-theme">テーマカラー</span>
+                    <div class="config-row-right">
+                        <select id="cfg-theme" class="mini-select" style="margin-right: 42px;">
+                            <option value="default" id="opt-theme-default">Standard</option>
+                            <option value="sakura" id="opt-theme-sakura">桜</option>
+                            <option value="forest" id="opt-theme-forest">森</option>
+                            <option value="leaf" id="opt-theme-leaf">芝生</option>
+                            <option value="sun" id="opt-theme-sun">太陽</option> 
+                            <option value="orange" id="opt-theme-orange">蜜柑</option> 
+                            <option value="ocean" id="opt-theme-ocean">海</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="config-item">
+                    <span id="label-alarm-dur">アラーム持続時間</span>
+                    <div class="config-row-right">
+                        <input type="number" id="cfg-alarm-duration" class="mini-input" value="30" min="1" max="180">
+                        <span id="unit-s-dur" style="font-size:10px; color:var(--sub-text); width: 14px;">秒</span>
+                        <div style="width: 34px;"></div>
+                    </div>
+                </div>
+
+                <hr style="border: 0; border-top: 1px solid #444; margin: 15px 0;">
+                <div class="config-item" style="flex-direction: column; align-items: flex-start;">
+                    <span class="config-sub-label" id="label-def-time">デフォルト時間の変更</span>
+                    <div style="display: flex; gap: 5px; align-items: center;">
+                        <input type="number" id="def-hr" class="mini-input" min="0" max="99"> <span id="def-unit-h" style="font-size:10px; color:#555;">h</span>
+                        <input type="number" id="def-min" class="mini-input" min="0" max="59"> <span id="def-unit-m" style="font-size:10px; color:#555;">m</span>
+                        <input type="number" id="def-sec" class="mini-input" min="0" max="59"> <span id="def-unit-s" style="font-size:10px; color:#555;">s</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <input type="number" id="in-hr" value="0" inputmode="decimal"> <span class="label" id="unit-h" style="white-space: nowrap !important; margin-left: 4px; margin-right: 12px; flex-shrink: 0;">時間</span>
+                <input type="number" id="in-min" value="25" inputmode="decimal"> <span class="label" id="unit-m">分</span>
+                <input type="number" id="in-sec" value="0" inputmode="decimal"> <span class="label" id="unit-s">秒</span>
+            </div>
+            <input type="text" id="in-task" placeholder="メモ" spellcheck="false">
+            
+            <div id="pc-guide" style="color: #333; font-size: 13px; line-height: 1.6; text-align: center;">
+                設定：<span class="highlight-text">[Enter] 開始</span> / [←→]項目移動 / [↑↓]数値増減<br>
+                作動中：[Space]一時停止 / 終了時：操作で音停止 → もう一度操作で戻る
+            </div>
+            <button id="mobile-start-btn" class="mobile-start-btn" onclick="if(!isActive) startTimer()">▶ 開始</button>
+        </div>
+
+        <div id="timer-view">
+            <div id="mobile-reset-btn" onclick="resetTimer(event)">×</div>
+            <div id="countdown-display">00:00</div>
+        </div>
+    </div>
+
+    <div id="info-overlay">
+        <div id="display-task" style="color:var(--sub-text); margin-bottom:5px;"></div>
+        <div id="display-elapsed" class="stopwatch">経過: 00:00:00</div>
+    </div>
+
+    <div id="result-screen">
+        <canvas id="pattern-canvas"></canvas>
+    </div>
+
+    <div class="ad-container">
+        <div style="color: #444; font-size: 10px; border: 0px dashed #444; padding: 20px 60px;">　　　</div>
+    </div>
+
+    <script>
+        let mainInterval, alarmInterval, patternAnimationId, elapsedInterval;
+        let totalSec = 0, elapsedSec = 0;
+        let startTime = "";
+        let isPaused = false, isActive = false, isAlarmPlaying = false;
+        let audioCtx = null;
+        let currentFocusIndex = 1; 
+        let wakeLock = null;
+
+        const MAX_TOTAL_SEC = 359999; 
+
+        const THEMES = {
+            default: { bg: '#1a1a1a', panel: '#2a2a2a', accent: '#007bff', pattern: ['#007bff', '#00c6ff'] },
+            sakura:  { bg: '#2d2225', panel: '#3d2e32', accent: '#e4b0c7', pattern: ['#e4b0c7', '#ff69b4'] }, 
+            forest:  { bg: '#2a2320', panel: '#3a312d', accent: '#ca8f7e', pattern: ['#ca8f7e', '#ffdab9'] }, 
+            leaf:    { bg: '#02261d', panel: '#033b2d', accent: '#8fbc8f', pattern: ['#8fbc8f', '#228b22'] },
+            sun:     { bg: '#241e02', panel: '#382e03', accent: '#ffdd00', pattern: ['#ffdd00', '#ffffff'] },
+            orange:  { bg: '#261405', panel: '#3d2008', accent: '#ff8c00', pattern: ['#ff8c00', '#ffd700'] },
+            ocean:   { bg: '#021a1e', panel: '#032c33', accent: '#035162', pattern: ['#00d2ff', '#3a7bd5'] }  
+        };
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const isJa = urlParams.get('lang') === 'en' ? false : navigator.language.startsWith('ja');
+        const i18n = {
+            h: isJa ? '時間' : 'hr',
+            m: isJa ? '分' : 'min',
+            s: isJa ? '秒' : 'sec',
+            plan: isJa ? '設定' : 'Plan',
+            actual: isJa ? '実測' : 'Actual',
+            guide: isJa ? '設定：<span class="highlight-text">[Enter] 開始</span> / [←→] 項目移動 / [↑↓] 調整<br>作動中：[Space] 一時停止 / [Esc] 中断' : 'Settings: <span class="highlight-text">[Enter] Start</span> / [←→] Select / [↑↓] Adjust<br>Running: [Space] Pause / [Esc] Reset',
+            memo: isJa ? 'メモ' : 'Task',
+            start: isJa ? '▶開始' : '▶START',
+            tipConfig: isJa ? '詳細設定' : 'Settings',
+            tipLog:    isJa ? '履歴を表示/非表示' : 'Show/Hide Log',
+            tipIdea:   isJa ? '設計思想' : 'Philosophy',
+            tipMenu:   isJa ? 'メニュー' : 'Menu',
+            logTitle:  isJa ? '履歴（最大 400）' : 'Log (Max 400)',
+            full: isJa ? '自動フルスクリーン' : 'Auto Fullscreen',
+            showSec: isJa ? '秒単位で表示' : 'Show Seconds',
+            alarm: isJa ? '終了アラーム' : 'Alarm Sound',
+            theme: isJa ? 'テーマカラー' : 'Theme Color',
+            alarmDur: isJa ? 'アラーム持続時間' : 'Alarm Duration',
+            defTime: isJa ? 'デフォルト時間の変更' : 'Default Timer',
+            alarmStandard: isJa ? 'Beep' : 'Beep',
+            alarmRetro:    isJa ? 'レトロ' : 'Electric',
+            alarmChime:    isJa ? 'チャイム' : 'Chime',
+            alarmOldBell:  isJa ? '風鈴' : 'Zen Wind Chime',
+            alarmUp:       isJa ? 'アップ' : 'Rising',
+            alarmSapporo:  isJa ? '時計台' : 'Clock Tower',
+            themeDefault: isJa ? 'Standard' : 'Standard',
+            themeSakura:  isJa ? '桜' : 'Sakura',
+            themeForest:  isJa ? '森' : 'Forest',
+            themeLeaf:    isJa ? '芝生' : 'Grass',
+            themeSun:     isJa ? '太陽' : 'Sunlight',
+            themeOrange:  isJa ? '蜜柑' : 'Orange',
+            themeOcean:   isJa ? '海' : 'Ocean'
+        };
+
+        const el = {
+            philosophyTrigger: document.getElementById('philosophy-trigger'),
+            settings: document.getElementById('settings-view'),
+            timer: document.getElementById('timer-view'),
+            countdown: document.getElementById('countdown-display'),
+            overlay: document.getElementById('info-overlay'),
+            taskName: document.getElementById('display-task'),
+            elapsed: document.getElementById('display-elapsed'),
+            result: document.getElementById('result-screen'),
+            canvas: document.getElementById('pattern-canvas'),
+            inHr: document.getElementById('in-hr'), inMin: document.getElementById('in-min'), inSec: document.getElementById('in-sec'),
+            inTask: document.getElementById('in-task'),
+            cfgPanel: document.getElementById('config-panel'), cfgTrigger: document.getElementById('config-trigger'),
+            logSidePanel: document.getElementById('log-side-panel'), logTrigger: document.getElementById('log-trigger'),
+            logList: document.getElementById('log-list'),
+            cfgShowSec: document.getElementById('cfg-show-sec'), cfgAlarm: document.getElementById('cfg-alarm'), 
+            cfgAlarmDur: document.getElementById('cfg-alarm-duration'),
+            cfgFull: document.getElementById('cfg-fullscreen'),
+            cfgAlarmType: document.getElementById('cfg-alarm-type'),
+            cfgTheme: document.getElementById('cfg-theme'),
+            defHr: document.getElementById('def-hr'), defMin: document.getElementById('def-min'), defSec: document.getElementById('def-sec'),
+            menuTrigger: document.getElementById('menu-trigger'), menuDropdown: document.getElementById('menu-dropdown')
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const pageTitle = isJa 
+                ? "勉強タイマー｜Focus Timer Pro" 
+                : "Focus Timer Pro | Simple & Minimalist Study Timer";
+            const pageDesc = isJa 
+                ? "「勉強タイマー」は、スマホやPCで素早く作業を開始できる無料のWebアプリです。フルスクリーン表示や秒数の繰り上げなど、集中を妨げないカスタマイズ機能が充実。履歴管理で日々の積み上げを可視化し、勉強効率を最大化します。ポモドーロ・テクニックも対応。" 
+                : "Focus Timer Pro is a free, minimalist tool designed for study and deep work. Enhance your productivity with distraction-free full-screen mode, unique 'round-up seconds', and detailed progress logs. Start focusing instantly on any device.";
+            document.title = pageTitle;
+            const metaDesc = document.querySelector('meta[name="description"]');
+            if (metaDesc) metaDesc.content = pageDesc;
+            document.documentElement.lang = isJa ? 'ja' : 'en';
+            const ids = {
+                'unit-h': i18n.h, 'unit-m': i18n.m, 'unit-s': i18n.s,
+                'def-unit-h': i18n.h, 'def-unit-m': i18n.m, 'def-unit-s': i18n.s,
+                'unit-s-dur': i18n.s,
+                'label-full': i18n.full,
+                'label-show-sec': i18n.showSec,
+                'label-alarm': i18n.alarm,
+                'label-theme': i18n.theme,
+                'label-alarm-dur': i18n.alarmDur,
+                'label-def-time': i18n.defTime,
+                'mobile-start-btn': i18n.start,
+                'opt-alarm-standard': i18n.alarmStandard,
+                'opt-alarm-retro':    i18n.alarmRetro,
+                'opt-alarm-chime':    i18n.alarmChime,
+                'opt-alarm-old-bell': i18n.alarmOldBell,
+                'opt-alarm-up':       i18n.alarmUp,
+                'opt-alarm-sapporo':  i18n.alarmSapporo,
+                'opt-theme-default': i18n.themeDefault,
+                'opt-theme-sakura':  i18n.themeSakura,
+                'opt-theme-forest':  i18n.themeForest,
+                'opt-theme-leaf':    i18n.themeLeaf,
+                'opt-theme-sun':     i18n.themeSun,
+                'opt-theme-orange':  i18n.themeOrange,
+                'opt-theme-ocean':   i18n.themeOcean,
+                'log-panel-title': i18n.logTitle,
+            };
+            for (const [id, text] of Object.entries(ids)) {
+                const target = document.getElementById(id); 
+                if (target) target.textContent = text;
+            }
+            const tooltips = {
+                'config-trigger': i18n.tipConfig,
+                'log-trigger': i18n.tipLog,
+                'philosophy-trigger': i18n.tipIdea,
+                'menu-trigger': i18n.tipMenu
+            };
+            for (const [id, text] of Object.entries(tooltips)) {
+                const target = document.getElementById(id);
+                if (target) target.title = text;
+            }
+
+            const pcGuideEl = document.getElementById('pc-guide');
+            if (pcGuideEl) pcGuideEl.innerHTML = i18n.guide;
+            if (el.inTask) el.inTask.placeholder = i18n.memo;
+            const mobileBtn = document.getElementById('mobile-start-btn');
+            if (mobileBtn) mobileBtn.textContent = i18n.start;
+        });
+        
+        const DEFAULT_CONFIG = {
+            showSec: false, alarm: false, alarmType: 'standard', alarmDur: 5, full: true, theme: 'default', defTime: { h: 0, m: 25, s: 0 }
+        };
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; el.menuDropdown.style.display = 'none'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function applyTheme(themeKey) {
+            const theme = THEMES[themeKey] || THEMES.default;
+            document.documentElement.style.setProperty('--bg-color', theme.bg);
+            document.documentElement.style.setProperty('--panel-bg', theme.panel);
+            document.documentElement.style.setProperty('--accent-color', theme.accent);
+        
+document.querySelector('meta[name="theme-color"]').setAttribute('content', theme.bg);
+}
+
+        function saveSettings() {
+            const settings = {
+                showSec: el.cfgShowSec.checked,
+                alarm: el.cfgAlarm.checked,
+                alarmType: el.cfgAlarmType.value,
+                alarmDur: parseInt(el.cfgAlarmDur.value) || 5,
+                full: el.cfgFull.checked,
+                theme: el.cfgTheme.value,
+                defTime: { h: el.defHr.value, m: el.defMin.value, s: el.defSec.value }
+            };
+            localStorage.setItem('focusTimerSettings_v3', JSON.stringify(settings));
+        }
+
+        function loadSettings() {
+            const saved = localStorage.getItem('focusTimerSettings_v3');
+            const s = saved ? JSON.parse(saved) : DEFAULT_CONFIG;
+            el.cfgShowSec.checked = s.showSec; el.cfgAlarm.checked = s.alarm;
+            el.cfgAlarmType.value = s.alarmType || 'standard'; el.cfgAlarmDur.value = s.alarmDur || 30;
+            el.cfgFull.checked = s.full; el.cfgTheme.value = s.theme || 'default';
+            el.defHr.value = s.defTime.h; el.defMin.value = s.defTime.m; el.defSec.value = s.defTime.s;
+            if (!saved) {el.inHr.value = 0; el.inMin.value = 0; el.inSec.value = 5;
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                if (isMobile) {el.cfgTheme.value = 'leaf';applyTheme('leaf');}
+            } else {el.inHr.value = s.defTime.h; el.inMin.value = s.defTime.m; el.inSec.value = s.defTime.s;
+            }
+            applyTheme(el.cfgTheme.value); renderLogs(); updateFocusUI();
+        }
+
+        async function requestWakeLock() {
+            try {
+                if ('wakeLock' in navigator) {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                    console.log('Wake Lock is active');
+                }
+            } catch (err) {
+                console.log('Wake Lock error:', err);
+            }
+        }
+        function releaseWakeLock() {
+            if (wakeLock !== null) {
+                wakeLock.release().then(() => {
+                    wakeLock = null;
+                    console.log('Wake Lock released');
+                });
+            }
+        }
+
+        function applyRollLogic(inputs) {
+            let h = parseInt(inputs[0].value) || 0, m = parseInt(inputs[1].value) || 0, s = parseInt(inputs[2].value) || 0;
+            if (s >= 60) { m += Math.floor(s / 60); s %= 60; }
+            if (s < 0) { m += Math.floor(s / 60); s = (s % 60 + 60) % 60; }
+            if (m >= 60) { h += Math.floor(m / 60); m %= 60; }
+            if (m < 0) { h += Math.floor(m / 60); m = (m % 60 + 60) % 60; }
+            let total = h * 3600 + m * 60 + s;
+            if (total > MAX_TOTAL_SEC) { h = 99; m = 59; s = 59; }
+            else if (total < 0) { h = 0; m = 0; s = 0; }
+            inputs[0].value = h; inputs[1].value = m; inputs[2].value = s;
+            saveSettings();
+        }
+
+        function updateFocusUI() {
+            const configOpen = el.cfgPanel.style.display === 'block';
+            const mainInputs = [el.inHr, el.inMin, el.inSec], defInputs = [el.defHr, el.defMin, el.defSec];
+            mainInputs.forEach((input, idx) => {
+                if (!configOpen && idx === currentFocusIndex) input.classList.add('active-focus');
+                else input.classList.remove('active-focus');
+            });
+            defInputs.forEach((input, idx) => {
+                if (configOpen && idx === currentFocusIndex) input.classList.add('active-focus');
+                else input.classList.remove('active-focus');
+            });
+        }
+
+        [el.inHr, el.inMin, el.inSec, el.defHr, el.defMin, el.defSec].forEach(input => {
+            input.oninput = () => {
+                const configOpen = el.cfgPanel.style.display === 'block';
+                const targets = configOpen ? [el.defHr, el.defMin, el.defSec] : [el.inHr, el.inMin, el.inSec];
+                applyRollLogic(targets);
+            };
+            input.onfocus = (e) => {
+                const id = e.target.id;
+                if (id.includes('hr')) currentFocusIndex = 0; else if (id.includes('min')) currentFocusIndex = 1; else if (id.includes('sec')) currentFocusIndex = 2;
+                updateFocusUI();
+            };
+        });
+
+        function formatByConfig(seconds, showSec) {
+            const h = Math.floor(seconds / 3600), m = Math.floor((seconds % 3600) / 60), s = seconds % 60;
+            if (showSec) return (h > 0 ? String(h).padStart(2, '0') + ":" : "00:") + String(m).padStart(2, '0') + ":" + String(s).padStart(2, '0');
+            else {
+                let dispM = m; if (seconds > 0 && s > 0) dispM = m + 1;
+                let dispH = h; if (dispM >= 60) { dispH += 1; dispM = 0; }
+                return String(dispH).padStart(2, '0') + ":" + String(dispM).padStart(2, '0');
+            }
+        }
+
+        class PatternEngine {
+            constructor(canvas, themeKey) {
+                this.canvas = canvas; this.ctx = canvas.getContext('2d');
+                this.themeKey = themeKey; this.theme = THEMES[themeKey] || THEMES.default;
+                this.items = []; this.resize(); this.init();
+            }
+            resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; }
+            init() {
+                let count = this.themeKey === 'sakura' ? 100 : 60;
+                for(let i=0; i<count; i++) {
+                    this.items.push({
+                        x: Math.random() * this.canvas.width, y: Math.random() * this.canvas.height,
+                        size: Math.random() * 20 + 8, speed: Math.random() * 1.5 + 0.5,
+                        angle: Math.random() * Math.PI * 2, rotSpeed: (Math.random() - 0.5) * 0.08,
+                        opacity: Math.random(), offset: Math.random() * 100, radius: 0
+                    });
+                }
+            }
+            draw() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                const colors = this.theme.pattern;
+                this.items.forEach(p => {
+                    this.ctx.save(); this.ctx.globalAlpha = (0.5 + p.opacity * 0.4);
+                    this.ctx.fillStyle = colors[0]; this.ctx.strokeStyle = colors[1];
+                    switch(this.themeKey) {
+                        case 'sakura':
+                            p.angle += p.rotSpeed; this.ctx.translate(p.x, p.y); this.ctx.rotate(p.angle);
+                            this.ctx.fillRect(-p.size, -p.size, p.size * 2, p.size * 2); break;
+                        case 'forest':
+                            p.y += p.speed; p.x += Math.sin(Date.now() * 0.002 + p.offset) * 1.5;
+                            p.angle += p.rotSpeed; if(p.y > this.canvas.height) p.y = -p.size;
+                            this.ctx.translate(p.x, p.y); this.ctx.rotate(p.angle);
+                            this.ctx.beginPath(); this.ctx.ellipse(0, 0, p.size, p.size/2, 0, 0, Math.PI*2); this.ctx.fill(); break;
+                        case 'sun':
+                            const cx = this.canvas.width / 2, cy = this.canvas.height / 2;
+                            p.radius += p.speed * 3; if(p.radius > this.canvas.width) p.radius = 0;
+                            this.ctx.beginPath(); this.ctx.lineWidth = 2; this.ctx.arc(cx, cy, p.radius, 0, Math.PI * 2); this.ctx.stroke();
+                            p.x += Math.cos(p.angle) * p.speed * 4; p.y += Math.sin(p.angle) * p.speed * 4;
+                            if(p.x < 0 || p.x > this.canvas.width || p.y < 0 || p.y > this.canvas.height) { p.x = cx; p.y = cy; p.angle = Math.random() * Math.PI * 2; }
+                            this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.size / 4, 0, Math.PI * 2); this.ctx.fill(); break;
+                        case 'orange':
+                            p.x += p.speed * 2.5; p.y = this.canvas.height - 40; p.angle += 0.15;
+                            if(p.x > this.canvas.width + 50) p.x = -50;
+                            this.ctx.lineWidth = 1; this.ctx.translate(p.x, p.y); this.ctx.rotate(p.angle);
+                            this.ctx.beginPath(); this.ctx.arc(0, 0, p.size, 0, Math.PI*2); this.ctx.fill(); this.ctx.stroke();
+                            this.ctx.beginPath(); this.ctx.moveTo(0, -p.size); this.ctx.lineTo(0, p.size); this.ctx.stroke(); break;
+                        case 'leaf':
+                            const grid = 60; const waveX = Math.floor(p.x/grid)*grid, waveY = Math.floor(p.y/grid)*grid;
+                            const off = Math.sin(Date.now()*0.002 + (waveX+waveY)*0.01) * 15;
+                            this.ctx.fillRect(waveX, waveY + off, grid-8, grid-8); break;
+                        case 'ocean':
+                            p.x += (p.offset > 50 ? p.speed : -p.speed);
+                            if(p.x > this.canvas.width + 60) p.x = -60; if(p.x < -60) p.x = this.canvas.width + 60;
+                            this.ctx.beginPath(); this.ctx.moveTo(p.x, p.y); this.ctx.lineTo(p.x - 30, p.y - 15); this.ctx.lineTo(p.x - 30, p.y + 15); this.ctx.fill(); break;
+                        default:
+                            p.y += p.speed; if(p.y > this.canvas.height) p.y = -p.size;
+                            this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.size/2, 0, Math.PI*2); this.ctx.fill();
+                    }
+                    this.ctx.restore();
+                });
+                patternAnimationId = requestAnimationFrame(() => this.draw());
+            }
+        }
+
+        function startTimer() {
+            const h = parseInt(el.inHr.value) || 0, m = parseInt(el.inMin.value) || 0, s = parseInt(el.inSec.value) || 0;
+            totalSec = h * 3600 + m * 60 + s;
+            if (totalSec <= 0) return;
+            isActive = true; isPaused = false; elapsedSec = 0;
+            startTime = new Date().toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) + "～";
+            if (el.logSidePanel) el.logSidePanel.style.display = 'none';
+            el.settings.style.display = 'none'; el.timer.style.display = 'block'; el.overlay.style.display = 'block';
+            const taskText = el.inTask.value.trim();
+            el.taskName.textContent = taskText; el.taskName.style.display = taskText === "" ? "none" : "block";
+            if (el.cfgFull.checked) { try { document.documentElement.requestFullscreen(); } catch(e){} }
+            requestWakeLock();
+            updateDisplay();
+            mainInterval = setInterval(tick, 1000);
+            elapsedInterval = setInterval(() => { if(!isPaused) { elapsedSec++; updateElapsed(); } }, 1000);
+        }
+
+        function tick() { if (isPaused) return; if (totalSec > 0) { totalSec--; updateDisplay(); if (totalSec === 0) finish(); } }
+        function updateDisplay() { el.countdown.textContent = formatByConfig(totalSec, el.cfgShowSec.checked); document.title = `(${el.countdown.textContent}) Focus`; }
+        function updateElapsed() {
+            const h = Math.floor(elapsedSec / 3600), m = Math.floor((elapsedSec % 3600) / 60), s = elapsedSec % 60;
+            el.elapsed.textContent = el.cfgShowSec.checked ? `経過: ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}` : `経過: ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+        }
+
+        function togglePause() {
+            if (!isActive) return;
+            isPaused = !isPaused;
+            if (isPaused) {releaseWakeLock();
+            } else {requestWakeLock();
+            }
+            el.countdown.style.opacity = isPaused ? '0.3' : '1';
+            el.countdown.style.color = isPaused ? 'var(--pause-color)' : 'var(--text-color)';
+        }
+
+        function finish() {
+            clearInterval(mainInterval); isActive = false; isAlarmPlaying = true;
+            el.countdown.style.display = 'none';
+            el.result.style.display = 'flex'; el.result.style.backgroundColor = 'rgba(0,0,0,0.85)';
+            const engine = new PatternEngine(el.canvas, el.cfgTheme.value); engine.draw();
+            setTimeout(() => { el.canvas.style.opacity = '1'; }, 100);
+            if (el.cfgAlarm.checked) triggerAlarmCycle();
+        }
+
+        let alarmRepeatTimer;
+        function triggerAlarmCycle() { if (!isAlarmPlaying) return; playAlarmSound(); 
+            const intervals = { 
+                'retro-alarm': 3200,
+                'old-bell': 4500,
+                'sapporo-bell': 3500
+            };
+            const intervalTime = intervals[el.cfgAlarmType.value] || 2200;
+            alarmRepeatTimer = setInterval(() => {
+                if (isAlarmPlaying) {playAlarmSound();
+                } else {clearInterval(alarmRepeatTimer);
+                       }
+            }, intervalTime);
+            alarmInterval = setTimeout(() => {
+            isAlarmPlaying = false; 
+            clearInterval(alarmRepeatTimer);}, (parseInt(el.cfgAlarmDur.value) || 5) * 1000);}
+
+        function playSapporoBell(ctx) {
+            const now = ctx.currentTime;
+            const tones = [
+                { freq: 220, gain: 0.3, decay: 4.0 }, 
+                { freq: 442, gain: 0.15, decay: 3.5 }, 
+                { freq: 665, gain: 0.1, decay: 3.0 }, 
+                { freq: 880, gain: 0.05, decay: 2.0 }, 
+                { freq: 100, gain: 0.02, decay: 4.5 }  
+            ];
+            tones.forEach(t => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(t.freq, now);
+                gain.gain.setValueAtTime(0, now);
+                gain.gain.linearRampToValueAtTime(t.gain, now + 0.01); 
+                gain.gain.exponentialRampToValueAtTime(0.001, now + t.decay); 
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + t.decay);
+            });
+        }
+
+        function playFuurin(ctx) {
+            const t = ctx.currentTime;
+            const hitCount = Math.floor(Math.random() * 2) + 2;
+            for (let i = 0; i < hitCount; i++) {
+                const delay = i === 0 ? 0 : Math.random() * 0.8;
+                const startTime = t + delay;
+                const velocity = 0.02 + Math.random() * 0.04;
+                const baseFreq = 2960 + (Math.random() * 20 - 10); 
+                const partials = [
+                    { mult: 1.0,   g: 1.0,  d: 4.5 }, 
+                    { mult: 1.002, g: 0.6,  d: 3.5 }, 
+                    { mult: 1.49,  g: 0.5,  d: 2.5 }, 
+                    { mult: 2.11,  g: 0.3,  d: 1.5 }, 
+                    { mult: 3.25,  g: 0.2,  d: 0.8 } 
+                ];
+                partials.forEach((p) => {
+                    const osc = ctx.createOscillator();
+                    const gainNode = ctx.createGain(); 
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(baseFreq * p.mult, startTime);
+                    gainNode.gain.setValueAtTime(0, startTime);
+                    const peakGain = velocity * p.g;
+                    gainNode.gain.linearRampToValueAtTime(peakGain, startTime + 0.005); 
+                    gainNode.gain.exponentialRampToValueAtTime(0.00001, startTime + p.d);
+                    osc.connect(gainNode);
+                    gainNode.connect(ctx.destination);
+                    osc.start(startTime);
+                    osc.stop(startTime + p.d);
+                });
+            }
+        }
+
+        function playVintageDigital(ctx) {
+            const t = ctx.currentTime;
+            const freq = 3840; 
+            const pattern = [
+                0, 0.2, 0.4, 
+                0.8, 1.0, 1.2 
+            ];
+            pattern.forEach(delay => {
+                const startTime = t + delay;
+                const duration = 0.08; 
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(freq, startTime);
+                gain.gain.setValueAtTime(0, startTime);
+                gain.gain.setValueAtTime(0.03, startTime);
+                gain.gain.setValueAtTime(0, startTime + duration);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(startTime);
+                osc.stop(startTime + duration + 0.01);
+            });
+        }
+        
+        async function playAlarmSound() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') await audioCtx.resume();
+            const type = el.cfgAlarmType.value, now = audioCtx.currentTime;
+            if (type === 'sapporo-bell') {playSapporoBell(audioCtx);return;
+            }
+            if (type === 'standard') {
+                const osc = audioCtx.createOscillator(), gain = audioCtx.createGain(); osc.type = 'sine'; osc.frequency.setValueAtTime(880, now);
+                gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 1);
+                osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(now + 1);
+            } else if (type === 'retro-alarm') {
+                playVintageDigital(audioCtx);
+            } else if (type === 'digital-chime') {
+                [659, 523].forEach((f, i) => {
+                    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain(); osc.frequency.setValueAtTime(f, now + i*0.3); gain.gain.setValueAtTime(0.1, now + i*0.3);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + i*0.3 + 0.5);
+                    osc.connect(gain); gain.connect(audioCtx.destination); osc.start(now + i*0.3); osc.stop(now + i*0.3 + 0.5);
+                });
+            } else if (type === 'old-bell') {
+                playFuurin(audioCtx);
+            } else if (type === 'retro-up') {
+                const t = audioCtx.currentTime; 
+                const freqs = [392, 523]; 
+                const duration = 0.4;
+                freqs.forEach((baseFreq) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(baseFreq, t);
+                    osc.frequency.exponentialRampToValueAtTime(baseFreq * 2, t + duration);
+                    gain.gain.setValueAtTime(0, t);
+                    gain.gain.linearRampToValueAtTime(0.1, t + 0.05); 
+                    gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(t);
+                    osc.stop(t + duration);
+                });
+            }
+        }
+
+        function stopAlarm() { isAlarmPlaying = false; clearTimeout(alarmInterval); if (alarmRepeatTimer) clearInterval(alarmRepeatTimer); if (audioCtx) audioCtx.suspend(); }
+
+        function resetTimer() {
+            if (isActive || isAlarmPlaying || el.result.style.display === 'flex'){const isCompleted = isAlarmPlaying || el.result.style.display === 'flex';saveLog(isCompleted, elapsedSec); 
+            }
+            releaseWakeLock();
+            stopAlarm(); isActive = false; clearInterval(mainInterval); clearInterval(elapsedInterval); cancelAnimationFrame(patternAnimationId);
+            el.countdown.style.display = 'block';
+            el.result.style.display = 'none'; el.timer.style.display = 'none'; el.overlay.style.display = 'none'; el.settings.style.display = 'flex';
+            el.canvas.style.opacity = '0'; document.title = "Focus Timer Pro";
+            if (document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+        }
+
+        function saveLog(isCompleted, actualTimeSec) {
+            const logs = JSON.parse(localStorage.getItem('focusTimerLogs_v3') || '[]');
+            const h = parseInt(el.inHr.value) || 0, m = parseInt(el.inMin.value) || 0, s = parseInt(el.inSec.value) || 0;
+            const plannedTime = formatByConfig(h * 3600 + m * 60 + s, true);
+            const actualTime = formatByConfig(actualTimeSec, true);
+            logs.unshift({ id: Date.now(), task: el.inTask.value.trim() || "⌘", planTime: plannedTime, actualTime: actualTime, date: startTime, completed: isCompleted });
+            localStorage.setItem('focusTimerLogs_v3', JSON.stringify(logs.slice(0, 400))); renderLogs();
+        }
+
+        function renderLogs() {const logs =JSON.parse(localStorage.getItem('focusTimerLogs_v3') || '[]');
+    el.logList.innerHTML = logs.map(log => `
+        <div class="log-entry" style="padding: 10px 4px; border-bottom: 1px solid rgba(255,255,255,0.1);">            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <div style="display: flex; align-items: center; gap: 8px; flex: 1; overflow: hidden;">
+                    <span class="${log.completed ? 'log-status-comp' : 'log-status-abort'}" style="padding: 2px 6px; border-radius: 3px; font-size: 0.75em; flex-shrink: 0; font-weight: bold;">
+                        ${log.completed ? '〇' : '△'}
+                    </span>
+                    <strong style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 1em;">
+                        ${log.task}
+                    </strong>
+                </div>
+                <button class="btn-delete" onclick="deleteLog(${log.id})" style="margin: 0 0 0 10px; background: none; border: none; color: #ff5f5f; cursor: pointer; font-size: 1.1em;">✕</button>
+            </div>
+            <div style="font-size: 0.85em; opacity: 0.7; display: flex; gap: 10px; flex-wrap: wrap;">
+                <span>${log.date}</span>
+                <span>${i18n.plan}: ${log.planTime} / ${i18n.actual}: ${log.actualTime}</span>
+            </div>            
+        </div>`).join('');
+        }
+
+        function deleteLog(id) { let logs = JSON.parse(localStorage.getItem('focusTimerLogs_v3') || '[]'); localStorage.setItem('focusTimerLogs_v3', JSON.stringify(logs.filter(l => l.id !== id))); renderLogs(); }
+        function clearAllLogs() { if(confirm("すべての履歴を削除しますか？")) { localStorage.setItem('focusTimerLogs_v3', '[]'); renderLogs(); } }
+
+        window.onkeydown = (e) => {
+            if (document.querySelector('.modal-overlay[style*="display: flex"]')) { if(e.key === 'Escape') closeModal(document.querySelector('.modal-overlay[style*="display: flex"]').id); return; }
+            if (isAlarmPlaying || el.result.style.display === 'flex') { e.preventDefault(); resetTimer(); return; }
+            if (isActive) { if (e.code === 'Space') { e.preventDefault(); togglePause(); } if (e.key === 'Escape') resetTimer(); return; }
+            const configOpen = el.cfgPanel.style.display === 'block';
+            const targets = configOpen ? [el.defHr, el.defMin, el.defSec] : [el.inHr, el.inMin, el.inSec];
+            if (e.key === 'ArrowRight') { e.preventDefault(); currentFocusIndex = (currentFocusIndex + 1) % 3; targets[currentFocusIndex].focus(); updateFocusUI(); }
+            if (e.key === 'ArrowLeft') { e.preventDefault(); currentFocusIndex = (currentFocusIndex + 2) % 3; targets[currentFocusIndex].focus(); updateFocusUI(); }
+            if (e.key === 'ArrowUp' || e.key === 'ArrowDown') { e.preventDefault(); targets[currentFocusIndex].value = (parseInt(targets[currentFocusIndex].value) || 0) + (e.key === 'ArrowUp' ? 1 : -1); applyRollLogic(targets); }
+            if (e.key === 'Enter') { if (configOpen) { el.cfgPanel.style.display = 'none'; updateFocusUI(); } else startTimer(); }
+            if (e.key === 'Escape') { if (configOpen) { el.cfgPanel.style.display = 'none'; updateFocusUI(); } if (el.logSidePanel.style.display === 'block') el.logSidePanel.style.display = 'none'; el.menuDropdown.style.display = 'none'; }
+        };
+
+        el.menuTrigger.onclick = (e) => { e.stopPropagation(); el.menuDropdown.style.display = el.menuDropdown.style.display === 'block' ? 'none' : 'block'; el.cfgPanel.style.display = 'none'; el.logSidePanel.style.display = 'none'; };
+        el.cfgTrigger.onclick = (e) => { e.stopPropagation(); el.cfgPanel.style.display = el.cfgPanel.style.display === 'block' ? 'none' : 'block'; el.menuDropdown.style.display = 'none'; if (el.cfgPanel.style.display === 'block') if (el.cfgPanel.style.display === 'block' && !isMobile) {el.defMin.focus();} updateFocusUI(); };
+        el.logTrigger.onclick = (e) => { e.stopPropagation(); el.logSidePanel.style.display = el.logSidePanel.style.display === 'block' ? 'none' : 'block'; el.menuDropdown.style.display = 'none'; if(el.logSidePanel.style.display === 'block') renderLogs(); };
+        
+        document.onclick = () => { if (isAlarmPlaying) { stopAlarm(); return; } el.cfgPanel.style.display = 'none'; el.menuDropdown.style.display = 'none'; updateFocusUI(); };
+        el.cfgPanel.onclick = (e) => e.stopPropagation(); el.logSidePanel.onclick = (e) => e.stopPropagation(); el.menuDropdown.onclick = (e) => e.stopPropagation();
+        el.cfgTheme.onchange = () => { applyTheme(el.cfgTheme.value); saveSettings(); updateFocusUI(); };
+        el.cfgAlarmType.onchange = () => { applyTheme(el.cfgTheme.value); saveSettings(); updateFocusUI(); playAlarmSound(); };
+        el.philosophyTrigger.onclick = (e) => { 
+        e.stopPropagation(); openModal('modal-philosophy'); 
+        el.menuDropdown.style.display = 'none';
+        el.cfgPanel.style.display = 'none';
+        el.logSidePanel.style.display = 'none';
+        };
+        
+        el.countdown.onclick = (e) => { e.stopPropagation(); togglePause(); };
+        
+        el.result.onclick = (e) => { e.stopPropagation(); resetTimer(); };
+        window.onload = loadSettings;
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').then(reg => {
+                    console.log('ServiceWorker registered');
+                }).catch(err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
