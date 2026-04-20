@@ -633,7 +633,7 @@
 
     <div id="info-overlay">
         <div id="display-task" style="color:var(--sub-text); margin-bottom:5px;"></div>
-        <div id="display-elapsed" class="stopwatch">00:00:00</div>
+        <div id="display-elapsed" class="stopwatch">Elapsed: 00:00:00</div>
     </div>
 
     <div id="result-screen">
@@ -982,7 +982,7 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
         function updateDisplay() { el.countdown.textContent = formatByConfig(totalSec, el.cfgShowSec.checked); document.title = `(${el.countdown.textContent}) Focus`; }
         function updateElapsed() {
             const h = Math.floor(elapsedSec / 3600), m = Math.floor((elapsedSec % 3600) / 60), s = elapsedSec % 60;
-            el.elapsed.textContent = el.cfgShowSec.checked ? `経過: ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}` : `経過: ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+            el.elapsed.textContent = el.cfgShowSec.checked ? `Elapsed: ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}` : `Elapsed: ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
         }
 
         function togglePause() {
