@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://focus-timer-pro.com/</loc>
-    <lastmod>2026-03-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://focus-timer-pro.com/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://focus-timer-pro.com/en/"/>
+    <lastmod>2026-04-22</lastmod>
+  </url>
+  <url>
+    <loc>https://focus-timer-pro.com/en/</loc>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://focus-timer-pro.com/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://focus-timer-pro.com/en/"/>
+    <lastmod>2026-04-22</lastmod>
   </url>
 </urlset>
