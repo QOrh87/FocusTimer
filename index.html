@@ -67,7 +67,6 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            overflow: hidden;
             cursor: default;
             transition: background-color 0.5s, color 0.5s;
         }
@@ -449,6 +448,68 @@
     max-width: 45%; 
     height: auto;
 }
+        
+.concept-container {
+    max-width: 1000px;
+    margin: 40px auto 100px; 
+    padding: 40px 40px;   
+    background-color: #333; 
+    border-radius: 24px;    
+    backdrop-filter: blur(5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    color: #f2f2f0;
+    line-height: 2.0;     
+    text-align: justify;   
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    display: grid;
+    grid-template-columns: 1fr; 
+    gap: 25px; 
+}
+.section-title {
+    grid-column: 1 / -1; 
+    font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: var(--text-color);
+    border-bottom: 1px solid var(--accent-color, #f2f2f0); 
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    letter-spacing: 0.05em;
+    line-height: 1.4;
+    position: relative;
+    padding-bottom: 10px;
+    transition: color 0.5s;
+    aligin: center;
+}
+.concept-card h3 {
+    font-size: 16px;
+    color: #fff;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    border-bottom: 1px solid var(--accent-color, #f2f2f0); 
+    display: inline-block; 
+    padding-bottom: 1px;
+    font-weight: 600;
+}
+.concept-card p {
+    font-size: 0.95rem;
+    margin-bottom: 0rem;
+    opacity: 0.9; 
+}
+@media (min-width: 768px) {
+    .concept-container {
+        grid-template-columns: 1fr 1fr; 
+        max-width: 900px;
+        gap: 40px; 
+    }
+}
+@media (max-width: 600px) {
+    .concept-container {
+        margin: 30px 15px 80px;
+        padding: 35px 25px;
+    }
+}
+        
     </style>
 </head>
 <body>
@@ -1215,8 +1276,17 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
         el.cfgPanel.onclick = (e) => e.stopPropagation(); el.logSidePanel.onclick = (e) => e.stopPropagation(); el.menuDropdown.onclick = (e) => e.stopPropagation();
         el.cfgTheme.onchange = () => { applyTheme(el.cfgTheme.value); saveSettings(); updateFocusUI(); };
         el.cfgAlarmType.onchange = () => { applyTheme(el.cfgTheme.value); saveSettings(); updateFocusUI(); playAlarmSound(); };
+        let isScrolled = false;
         el.philosophyTrigger.onclick = (e) => { 
-        e.stopPropagation(); openModal('modal-philosophy'); 
+        e.stopPropagation(); if (!isScrolled) {
+            const target = document.getElementById('concept-section');
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth' });
+                isScrolled = true;}
+        } else {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            isScrolled = false;
+        } 
         el.menuDropdown.style.display = 'none';
         el.cfgPanel.style.display = 'none';
         el.logSidePanel.style.display = 'none';
@@ -1236,6 +1306,28 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
                 });
             });
         }
+
+     <section id="concept-section" class="concept-container">
+            <h2 class="section-title">設計思想</h2>
+        <div class="concept-card">
+            <h3>1．ポモドーロ・テクニック</h3>
+            <p>　人間の集中力は無限ではありません。私たちの体にはウルトラディアンリズムと呼ばれる約90分の覚醒周期の波が存在します。また、現代の高負荷な知的作業においては、これより短いサイクルでの調整が有効だと言われています。ポモドーロ・テクニックは、25分の作業と5分の休憩を繰り返すことで高いパフォーマンスを維持する技術です。このことを踏まえ、本アプリはデフォルトの集中の時間を25分に設定しましたが、個人の集中力に合わせた調整をして自由に使ってください。</p>
+        </div>
+        <div class="concept-card">
+            <h3>2．5秒ルール</h3>
+            <p>　「やる気」がでるのを待つことは、多くの場合で意味がありません。受動的な姿勢では、不安と躊躇を司る脳の扁桃体がブレーキをかけ、ますます行動が困難になるからです。脳科学的知見に基づいた「5秒ルール」では、やると決めたら「5-4-3-2-1」とカウントダウンを始め、5秒以内に動き出します。これにより、主導権を感情を司る領域から論理と実行を司る前頭前野へと強制的に移行させます。本アプリは、立ち上げて即開始ができるように様々な工夫をしています。意思決定してから脳が言い訳を始める前に作業に取り組みましょう!!</p>
+        </div>
+        <div class="concept-card">
+            <h3>3．没頭の天敵</h3>
+            <p>　自閉スペクトラム症（ASD）や注意欠如多動症（ADHD）の特性を持つ人は、周囲のわずかなノイズや視覚的な過負荷によって、容易に認知資源（脳のリソース）が消費されます。この認知資源の枯渇が、タスク切り替えや時間把握といった実行機能を低下させます。本アプリのシンプルなデザインや、あえて秒数を切り上げて表示する設計は、視覚から入る情報の制限と脳のワーキングメモリの節約を通じて、ユーザーの環境調整に貢献します。</p>
+        </div>
+        <div class="concept-card">
+            <h3>4．「Human-in-the-loop」</h3>
+            <p>　本アプリは、チャッピー（ChatGPT）の記事に感化されたZ世代の大学生がジェミニで作りました。単純なタイマーは最初の数回の指示ですぐに完成。しかし、そこからデザインや使い勝手（UI/UX）を好みの形に変えてゆく工程では、AIと何十回もやり取りをする必要がありました。AIに全部を任せるのではなく、方針や最終決定に人間が関与することを、専門用語で「ヒューマン・イン・ザ・ループ」と呼ぶそうです。意図が伝わらないことに対する歯がゆさもありましたが、AIが一瞬でコードを生成する様は圧巻でした。皆さんもAIをパートナーにしてオリジナルのツールを作ってみてはいかがでしょうか？</p>
+        </div>
+    </section>
+
+    <script src="script.js"> 
     </script>
 </body>
 </html>
