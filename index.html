@@ -881,7 +881,6 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
             if (!saved) {el.inHr.value = 0; el.inMin.value = 0; el.inSec.value = 5;
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
                 if (isMobile) {el.cfgTheme.value = 'leaf';applyTheme('leaf');}
-　　            openModal('modal-about');
             } else {el.inHr.value = s.defTime.h; el.inMin.value = s.defTime.m; el.inSec.value = s.defTime.s;
             }
             applyTheme(el.cfgTheme.value); renderLogs(); updateFocusUI();
