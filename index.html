@@ -538,6 +538,23 @@
         opacity: 0.7;
     }
 }
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.5);
+}
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+}
 </style>
 </head>
 <body>
@@ -1055,6 +1072,7 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
             updateDisplay();
             mainInterval = setInterval(tick, 1000);
             elapsedInterval = setInterval(() => { if(!isPaused) { elapsedSec++; updateElapsed(); } }, 1000);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function tick() { if (isPaused) return; if (totalSec > 0) { totalSec--; updateDisplay(); if (totalSec === 0) finish(); } }
@@ -1232,6 +1250,7 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
             el.result.style.display = 'none'; el.timer.style.display = 'none'; el.overlay.style.display = 'none'; el.settings.style.display = 'flex';
             el.canvas.style.opacity = '0'; document.title = "Focus Timer Pro";
             if (document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+            elapsedSec = 0;
         }
 
         function saveLog(isCompleted, actualTimeSec) {
@@ -1307,6 +1326,20 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
         el.countdown.onclick = (e) => { e.stopPropagation(); togglePause(); };
         
         el.result.onclick = (e) => { e.stopPropagation(); resetTimer(); };
+        let scrollBackTimeout;
+        window.addEventListener('scroll', () => {
+            if (typeof elapsedSec !== 'undefined' && elapsedSec > 0) {
+                clearTimeout(scrollBackTimeout);
+                scrollBackTimeout = setTimeout(() => {
+                    if (window.scrollY > 0) {
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth'
+                        });
+                    }
+                }, 1000);
+            }
+        });
         window.onload = loadSettings;
 
         if ('serviceWorker' in navigator) {
