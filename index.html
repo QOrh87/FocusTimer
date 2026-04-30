@@ -1328,7 +1328,7 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
         el.result.onclick = (e) => { e.stopPropagation(); resetTimer(); };
         let scrollBackTimeout;
         window.addEventListener('scroll', () => {
-            if (typeof elapsedSec !== 'undefined' && elapsedSec > 0) {
+            if (typeof elapsedSec !== 'undefined' && elapsedSec > 0 && !isPaused) {
                 clearTimeout(scrollBackTimeout);
                 scrollBackTimeout = setTimeout(() => {
                     if (window.scrollY > 0) {
