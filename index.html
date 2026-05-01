@@ -1086,7 +1086,7 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
             if (!isActive) return;
             isPaused = !isPaused;
             if (isPaused) {releaseWakeLock();
-            } else {requestWakeLock();
+            } else {requestWakeLock(); window.scrollTo({ top: 0, behavior: 'smooth' });
             }
             el.countdown.style.opacity = isPaused ? '0.3' : '1';
             el.countdown.style.color = isPaused ? 'var(--pause-color)' : 'var(--text-color)';
