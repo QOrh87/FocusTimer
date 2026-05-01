@@ -741,13 +741,17 @@
     </div>
 
     <script>
-        let mainInterval, alarmInterval, patternAnimationId, elapsedInterval;
+        let mainInterval, alarmInterval, patternAnimationId;
         let totalSec = 0, elapsedSec = 0;
         let startTime = "";
         let isPaused = false, isActive = false, isAlarmPlaying = false;
         let audioCtx = null;
         let currentFocusIndex = 1; 
         let wakeLock = null;
+        let expectedEndTime = 0;
+        let startPhysicalTime = 0;
+        let pauseStartTime = 0;
+        let totalPausedMs = 0;
 
         const MAX_TOTAL_SEC = 359999; 
 
@@ -1061,7 +1065,10 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
             const h = parseInt(el.inHr.value) || 0, m = parseInt(el.inMin.value) || 0, s = parseInt(el.inSec.value) || 0;
             totalSec = h * 3600 + m * 60 + s;
             if (totalSec <= 0) return;
-            isActive = true; isPaused = false; elapsedSec = 0;
+            isActive = true; isPaused = false; elapsedSec = 0; totalPausedMs = 0;
+            const now = Date.now();
+            startPhysicalTime = now;
+            expectedEndTime = Date.now() + (totalSec * 1000);
             startTime = new Date().toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) + "～";
             if (el.logSidePanel) el.logSidePanel.style.display = 'none';
             el.settings.style.display = 'none'; el.timer.style.display = 'block'; el.overlay.style.display = 'block';
@@ -1070,14 +1077,27 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
             if (el.cfgFull.checked) { try { document.documentElement.requestFullscreen(); } catch(e){} }
             requestWakeLock();
             updateDisplay();
-            mainInterval = setInterval(tick, 1000);
-            elapsedInterval = setInterval(() => { if(!isPaused) { elapsedSec++; updateElapsed(); } }, 1000);
+            if (mainInterval) clearInterval(mainInterval);
+            mainInterval = setInterval(() => {
+                if (isActive) {updateTimerLogic();}
+                if (!isPaused) {updateElapsed();}
+            }, 200);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function tick() { if (isPaused) return; if (totalSec > 0) { totalSec--; updateDisplay(); if (totalSec === 0) finish(); } }
-        function updateDisplay() { el.countdown.textContent = formatByConfig(totalSec, el.cfgShowSec.checked); document.title = `(${el.countdown.textContent}) Focus`; }
+        function updateTimerLogic() {
+            if (isPaused) return; 
+            const now = Date.now();
+            const diff = expectedEndTime - now;
+            totalSec = Math.max(0, Math.ceil(diff / 1000));
+            updateDisplay();
+            if (totalSec <= 0) finish();
+        }
+        function updateDisplay() { el.countdown.textContent = formatByConfig(totalSec, el.cfgShowSec.checked); document.title = `(${el.countdown.textContent}) Focus`; 
+        }
         function updateElapsed() {
+            const now = Date.now();
+            elapsedSec = Math.floor((now - startPhysicalTime - totalPausedMs) / 1000);
             const h = Math.floor(elapsedSec / 3600), m = Math.floor((elapsedSec % 3600) / 60), s = elapsedSec % 60;
             el.elapsed.textContent = el.cfgShowSec.checked ? `経過: ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}` : `経過: ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
         }
@@ -1085,15 +1105,23 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
         function togglePause() {
             if (!isActive) return;
             isPaused = !isPaused;
-            if (isPaused) {releaseWakeLock();
-            } else {requestWakeLock(); window.scrollTo({ top: 0, behavior: 'smooth' });
+            const now = Date.now()
+            if (isPaused) {
+                releaseWakeLock();
+                pauseStartTime = now;
+            } else {
+                requestWakeLock();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                const pausedDuration = now - pauseStartTime;
+                expectedEndTime += pausedDuration;
+                totalPausedMs += pausedDuration;
             }
             el.countdown.style.opacity = isPaused ? '0.3' : '1';
             el.countdown.style.color = isPaused ? 'var(--pause-color)' : 'var(--text-color)';
         }
 
         function finish() {
-            clearInterval(mainInterval); isActive = false; isAlarmPlaying = true;
+            isActive = false; isAlarmPlaying = true;
             el.countdown.style.display = 'none';
             el.result.style.display = 'flex'; el.result.style.backgroundColor = 'rgba(0,0,0,0.85)';
             const engine = new PatternEngine(el.canvas, el.cfgTheme.value); engine.draw();
@@ -1245,7 +1273,7 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
             if (isActive || isAlarmPlaying || el.result.style.display === 'flex'){const isCompleted = isAlarmPlaying || el.result.style.display === 'flex';saveLog(isCompleted, elapsedSec); 
             }
             releaseWakeLock();
-            stopAlarm(); isActive = false; clearInterval(mainInterval); clearInterval(elapsedInterval); cancelAnimationFrame(patternAnimationId);
+            stopAlarm(); isActive = false; clearInterval(mainInterval); cancelAnimationFrame(patternAnimationId);
             el.countdown.style.display = 'block';
             el.result.style.display = 'none'; el.timer.style.display = 'none'; el.overlay.style.display = 'none'; el.settings.style.display = 'flex';
             el.canvas.style.opacity = '0'; document.title = "Focus Timer Pro";
