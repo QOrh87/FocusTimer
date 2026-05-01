@@ -1250,6 +1250,9 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
             el.result.style.display = 'none'; el.timer.style.display = 'none'; el.overlay.style.display = 'none'; el.settings.style.display = 'flex';
             el.canvas.style.opacity = '0'; document.title = "Focus Timer Pro";
             if (document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+            isPaused = false;
+            el.countdown.style.opacity = '1';
+            el.countdown.style.color = 'var(--text-color)';
             elapsedSec = 0;
         }
 
