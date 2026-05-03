@@ -2,7 +2,7 @@
   "name": "Focus Timer Pro",
   "short_name": "FocusTimer",
   "description": "シンプルで美しいデザインの作業用タイマー。",
-  "start_url": "index.html",
+  "start_url": "/?utm_source=pwa&utm_medium=app",
   "display": "standalone",
   "background_color": "#f2f2f0",
   "theme_color": "#f2f2f0",
