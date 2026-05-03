@@ -994,9 +994,15 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
             const h = Math.floor(seconds / 3600), m = Math.floor((seconds % 3600) / 60), s = seconds % 60;
             if (showSec) return (h > 0 ? String(h).padStart(2, '0') + ":" : "00:") + String(m).padStart(2, '0') + ":" + String(s).padStart(2, '0');
             else {
-                let dispM = m; if (seconds > 0 && s > 0) dispM = m + 1;
-                let dispH = h; if (dispM >= 60) { dispH += 1; dispM = 0; }
-                return String(dispH).padStart(2, '0') + ":" + String(dispM).padStart(2, '0');
+                if (expectedEndTime === 0) {
+                    let dispM = m;
+                    let dispH = h;
+                    return String(dispH).padStart(2, '0') + ":" + String(dispM).padStart(2, '0');
+                } else {
+                    let dispM = m; if (seconds > 0 && s > 0) dispM = m + 1;
+                    let dispH = h; if (dispM >= 60) { dispH += 1; dispM = 0; }
+                    return String(dispH).padStart(2, '0') + ":" + String(dispM).padStart(2, '0');
+                }
             }
         }
 
