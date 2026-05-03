@@ -1065,11 +1065,14 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
         function startTimer() {
             const h = parseInt(el.inHr.value) || 0, m = parseInt(el.inMin.value) || 0, s = parseInt(el.inSec.value) || 0;
             totalSec = h * 3600 + m * 60 + s;
-            if (totalSec <= 0) return;
             isActive = true; isPaused = false; elapsedSec = 0; totalPausedMs = 0;
             const now = Date.now();
             startPhysicalTime = now;
-            expectedEndTime = Date.now() + (totalSec * 1000);
+            if (totalSec > 0) {
+                expectedEndTime = Date.now() + (totalSec * 1000);
+             } else {
+                expectedEndTime = 0;
+            }
             startTime = new Date().toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) + "～";
             if (el.logSidePanel) el.logSidePanel.style.display = 'none';
             el.settings.style.display = 'none'; el.timer.style.display = 'block'; el.overlay.style.display = 'block';
@@ -1089,18 +1092,26 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
         function updateTimerLogic() {
             if (isPaused) return; 
             const now = Date.now();
-            const diff = expectedEndTime - now;
-            totalSec = Math.max(0, Math.ceil(diff / 1000));
+            if (expectedEndTime > 0) {
+                const diff = expectedEndTime - now;
+                totalSec = Math.max(0, Math.ceil(diff / 1000));
+                if (totalSec <= 0) finish();
+            } else {
+                totalSec = Math.floor((now - startPhysicalTime - totalPausedMs) / 1000);
+            }
             updateDisplay();
-            if (totalSec <= 0) finish();
         }
         function updateDisplay() { el.countdown.textContent = formatByConfig(totalSec, el.cfgShowSec.checked); document.title = `(${el.countdown.textContent}) Focus`; 
         }
         function updateElapsed() {
             const now = Date.now();
             elapsedSec = Math.floor((now - startPhysicalTime - totalPausedMs) / 1000);
-            const h = Math.floor(elapsedSec / 3600), m = Math.floor((elapsedSec % 3600) / 60), s = elapsedSec % 60;
-            el.elapsed.textContent = el.cfgShowSec.checked ? `経過: ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}` : `経過: ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+            if (expectedEndTime === 0) {
+                el.elapsed.textContent = "";
+            }else{    
+                const h = Math.floor(elapsedSec / 3600), m = Math.floor((elapsedSec % 3600) / 60), s = elapsedSec % 60;
+                el.elapsed.textContent = el.cfgShowSec.checked ? `経過: ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}` : `経過: ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+            }
         }
 
         function togglePause() {
@@ -1114,7 +1125,7 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
                 requestWakeLock();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 const pausedDuration = now - pauseStartTime;
-                expectedEndTime += pausedDuration;
+                if (expectedEndTime !== 0) expectedEndTime += pausedDuration;
                 totalPausedMs += pausedDuration;
             }
             el.countdown.style.opacity = isPaused ? '0.3' : '1';
