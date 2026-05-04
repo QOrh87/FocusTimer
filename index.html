@@ -96,6 +96,22 @@
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
 
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; 
+            width: 100%; height: 100%;
+            background-image: var(--bg-img, url('https://focus-timer-pro.com/images/Indian White-eye.png'));
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+            z-index: -1;
+            transition: opacity 0.6s ease;
+        }
+        body.timer-active::before {
+            opacity: 0;
+        }
+        
         .sw-bubble {
             position: absolute;
             bottom: 150%;
@@ -177,7 +193,7 @@
         .panel-trigger {
             cursor: pointer;
             font-size: 25px;
-            opacity: 0.15;
+            opacity: 0.3;
             color: var(--text-color);
             transition: opacity 0.4s, color 0.4s;
             user-select: none;
@@ -759,7 +775,7 @@
             </div>
             <input type="text" id="in-task" placeholder="メモ" spellcheck="false">
             
-            <div id="pc-guide" style="color: #333; font-size: 13px; line-height: 1.6; text-align: center;">
+            <div id="pc-guide" style="color: #333; font-size: 13px; line-height: 1.6; text-align: center; text-shadow: 1px 1px 2px var(--bg-color), -1px -1px 2px var(--bg-color), 1px -1px 2px var(--bg-color), -1px 1px 2px var(--bg-color); font-weight: 500;">
                 設定：<span class="highlight-text">[Enter] 開始</span> / [←→]項目移動 / [↑↓]数値増減<br>
                 作動中：[Space]一時停止 / 終了時：操作で音停止 → もう一度操作で戻る
             </div>
@@ -1154,6 +1170,7 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
                 if (!isPaused) {updateElapsed();}
             }, 200);
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.body.classList.add('timer-active');
         }
 
         function updateTimerLogic() {
@@ -1361,6 +1378,7 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
             el.countdown.style.opacity = '1';
             el.countdown.style.color = 'var(--text-color)';
             elapsedSec = 0;
+            document.body.classList.remove('timer-active');
         }
 
         function saveLog(isCompleted, actualTimeSec) {
