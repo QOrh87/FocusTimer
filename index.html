@@ -1090,7 +1090,7 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
             }
             resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; }
             init() {
-                let count = this.themeKey === 'sakura' ? 100 : 60;
+                let count = this.themeKey === 'sakura' ? 100 : (this.themeKey === 'orange' ? 25 : 60);
                 for(let i=0; i<count; i++) {
                     this.items.push({
                         x: Math.random() * this.canvas.width, y: Math.random() * this.canvas.height,
@@ -1160,11 +1160,12 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
                                 this.ctx.arc(p.x, p.y, currentSize, 0, Math.PI * 2);
                                 this.ctx.fill();}break;
                         case 'orange':
-                            p.x += p.speed * 2.5; p.y = this.canvas.height - 40; p.angle += 0.15;
+                            p.x += p.speed * 1.25; p.y = this.canvas.height - 40; p.angle += 0.075;
                             if(p.x > this.canvas.width + 50) p.x = -50;
                             this.ctx.lineWidth = 1; this.ctx.translate(p.x, p.y); this.ctx.rotate(p.angle);
                             this.ctx.beginPath(); this.ctx.arc(0, 0, p.size, 0, Math.PI*2); this.ctx.fill(); this.ctx.stroke();
-                            this.ctx.beginPath(); this.ctx.moveTo(0, -p.size); this.ctx.lineTo(0, p.size); this.ctx.stroke(); break;
+                            this.ctx.beginPath(); this.ctx.moveTo(0, -p.size); this.ctx.lineTo(0, p.size); this.ctx.stroke(); 
+                            for (let i = 0; i < 6; i++) { this.ctx.beginPath(); this.ctx.rotate(Math.PI / 5); this.ctx.moveTo(0, -p.size); this.ctx.lineTo(0, p.size); this.ctx.stroke(); } break;
                         case 'leaf':
                             const grid = 60; const waveX = Math.floor(p.x/grid)*grid, waveY = Math.floor(p.y/grid)*grid;
                             const off = Math.sin(Date.now()*0.002 + (waveX+waveY)*0.01) * 15;
