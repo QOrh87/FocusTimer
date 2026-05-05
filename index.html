@@ -919,6 +919,10 @@
         deferredPrompt = null;
     }
 });
+    window.addEventListener('appinstalled', () => {
+    installContainer.style.display = 'none';
+});
+
 
         function checkStopwatchMode() {
             const h = parseInt(el.inHr.value) || 0;
