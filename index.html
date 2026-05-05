@@ -820,6 +820,9 @@
         let pauseStartTime = 0;
         let totalPausedMs = 0;
         let animStopTimeout = null;
+        let deferredPrompt; 
+        const installContainer = document.getElementById('installContainer');
+        const installBtn = document.getElementById('installBtn');
 
         const MAX_TOTAL_SEC = 359999; 
 
@@ -906,7 +909,17 @@
     }
     installContainer.style.display = 'block';
 });
-
+    installBtn.addEventListener('click', async () => {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+            installContainer.style.display = 'none';
+        }
+        deferredPrompt = null;
+    }
+});
+
         function checkStopwatchMode() {
             const h = parseInt(el.inHr.value) || 0;
             const m = parseInt(el.inMin.value) || 0;
