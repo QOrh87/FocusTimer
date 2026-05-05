@@ -990,7 +990,7 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
                                 this.ctx.arc(p.x, p.y, currentSize, 0, Math.PI * 2);
                                 this.ctx.fill();}break;
                         case 'orange':
-                            p.x += p.speed * 2.5; p.y = this.canvas.height - 40; p.angle += 0.15;
+                            p.x += p.speed * (p.size / 20) * 1.5; p.y = this.canvas.height - 40; p.angle += 0.15;
                             if(p.x > this.canvas.width + 50) p.x = -50;
                             this.ctx.lineWidth = 1; this.ctx.translate(p.x, p.y); this.ctx.rotate(p.angle);
                             this.ctx.beginPath(); this.ctx.arc(0, 0, p.size, 0, Math.PI*2); this.ctx.fill(); this.ctx.stroke();
