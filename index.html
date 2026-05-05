@@ -813,6 +813,7 @@
         let startPhysicalTime = 0;
         let pauseStartTime = 0;
         let totalPausedMs = 0;
+        let animStopTimeout = null;
 
         const MAX_TOTAL_SEC = 359999; 
 
@@ -1257,9 +1258,18 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
             isActive = false; isAlarmPlaying = true;
             el.countdown.style.display = 'none';
             el.result.style.display = 'flex'; el.result.style.backgroundColor = 'rgba(0,0,0,0.85)';
-            const engine = new PatternEngine(el.canvas, el.cfgTheme.value); engine.draw();
+            const engine = new PatternEngine(el.canvas, el.cfgTheme.value);
+            patternAnimationId = engine.draw();
             setTimeout(() => { el.canvas.style.opacity = '1'; }, 100);
             if (el.cfgAlarm.checked) triggerAlarmCycle();
+            if (animStopTimeout) clearTimeout(animStopTimeout);
+                animStopTimeout = setTimeout(() => {
+                stopFinishAnim();
+            }, 600000);
+        }
+
+        function stopFinishAnim() {
+            if (patternAnimationId) { cancelAnimationFrame(patternAnimationId); patternAnimationId = null; }
         }
 
         let alarmRepeatTimer;
@@ -1416,6 +1426,7 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
             el.countdown.style.color = 'var(--text-color)';
             elapsedSec = 0;
             document.body.classList.remove('timer-active');
+            if (animStopTimeout) clearTimeout(animStopTimeout); stopFinishAnim();
         }
 
         function saveLog(isCompleted, actualTimeSec) {
