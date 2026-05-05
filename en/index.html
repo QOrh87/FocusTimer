@@ -96,6 +96,22 @@
             position: relative;
         }
 
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; 
+            width: 100%; height: 100%;
+            background-image: var(--bg-img, url('https://focus-timer-pro.com/images/Desk.png'));
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15; 
+            z-index: -1;
+            transition: opacity 0.6s ease;
+        }
+        body.timer-active::before {
+            opacity: 0;
+        }
+
         .input-group {
             display: flex;
             align-items: baseline;
@@ -137,7 +153,7 @@
         .panel-trigger {
             cursor: pointer;
             font-size: 25px;
-            opacity: 0.15;
+            opacity: 0.30;
             color: var(--text-color);
             transition: opacity 0.4s, color 0.4s;
             user-select: none;
@@ -632,7 +648,7 @@
             </div>
             <input type="text" id="in-task" placeholder="メモ" spellcheck="false">
             
-            <div id="pc-guide" style="color: #333; font-size: 13px; line-height: 1.6; text-align: center;">
+            <div id="pc-guide" style="color: #333; font-size: 13px; line-height: 1.6; text-align: center; text-shadow: 1px 1px 2px var(--bg-color), -1px -1px 2px var(--bg-color), 1px -1px 2px var(--bg-color), -1px 1px 2px var(--bg-color); font-weight: 600;">
                 設定：<span class="highlight-text">[Enter] 開始</span> / [←→]項目移動 / [↑↓]数値増減<br>
                 作動中：[Space]一時停止 / 終了時：操作で音停止 → もう一度操作で戻る
             </div>
@@ -1028,6 +1044,7 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
             updateDisplay();
             mainInterval = setInterval(tick, 1000);
             elapsedInterval = setInterval(() => { if(!isPaused) { elapsedSec++; updateElapsed(); } }, 1000);
+            document.body.classList.add('timer-active');
         }
 
         function tick() { if (isPaused) return; if (totalSec > 0) { totalSec--; updateDisplay(); if (totalSec === 0) finish(); } }
@@ -1205,6 +1222,7 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
             el.result.style.display = 'none'; el.timer.style.display = 'none'; el.overlay.style.display = 'none'; el.settings.style.display = 'flex';
             el.canvas.style.opacity = '0'; document.title = "Focus Timer Pro";
             if (document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+            document.body.classList.remove('timer-active');
         }
 
         function saveLog(isCompleted, actualTimeSec) {
