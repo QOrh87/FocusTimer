@@ -1145,7 +1145,19 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
                     switch(this.themeKey) {
                         case 'sakura':
                             p.angle += p.rotSpeed; this.ctx.translate(p.x, p.y); this.ctx.rotate(p.angle);
-                            this.ctx.fillRect(-p.size, -p.size, p.size * 2, p.size * 2); break;
+                            const sides = 5;
+                            const r = p.size;
+                            const startAngle = -Math.PI / 2; 
+                            this.ctx.beginPath();
+                            for (let i = 0; i < sides; i++) {
+                                const theta = startAngle + (i * 2 * Math.PI) / sides;
+                                const vx = r * Math.cos(theta);
+                                const vy = r * Math.sin(theta);
+                                if (i === 0) this.ctx.moveTo(vx, vy);
+                                else this.ctx.lineTo(vx, vy);
+                            }
+                            this.ctx.closePath();
+                            this.ctx.fill(); break;
                         case 'forest':
                             p.y += p.speed; p.x += Math.sin(Date.now() * 0.002 + p.offset) * 1.5;
                             p.angle += p.rotSpeed; if(p.y > this.canvas.height) p.y = -p.size;
