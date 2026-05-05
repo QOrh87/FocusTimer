@@ -625,6 +625,12 @@
                 <div class="menu-item" onclick="openModal('modal-feedback')">フィードバック</div>
                 <div class="menu-item" onclick="openModal('modal-privacy')">プライバシーポリシー</div>
 <hr style="border: 0; border-top: 1px solid var(--sub-text); opacity: 0.2; margin: 10px 0;">
+<div id="installContainer" style="display: none; width: 100%; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
+    <div id="installBtn" class="menu-item" style="cursor: pointer; display: flex; align-items: center;">
+        <img src="/favicon.svg" alt="" style="width: 1.2em; height: 1.2em; margin-right: 8px; flex-shrink: 0;">
+        <span id="installBtnText"></span>
+    </div>
+</div>
 <div class="menu-item"> <a href="https://focus-timer-pro.com/en/" style="color: var(--sub-text); text-decoration: none; display: flex; align-items: center; width: 100%;">
         <span style="margin-right: 8px;">🌐</span> English Version
     </a>
@@ -887,6 +893,19 @@
             defHr: document.getElementById('def-hr'), defMin: document.getElementById('def-min'), defSec: document.getElementById('def-sec'),
             menuTrigger: document.getElementById('menu-trigger'), menuDropdown: document.getElementById('menu-dropdown')
         };
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const installBtnText = document.getElementById('installBtnText');
+    if (isMobile) {
+        installBtnText.innerText = "ホーム画面に追加";
+    } else {
+        installBtnText.innerText = "アプリとして使用";
+    }
+    installContainer.style.display = 'block';
+});
 
         function checkStopwatchMode() {
             const h = parseInt(el.inHr.value) || 0;
