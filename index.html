@@ -1220,18 +1220,15 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
                             const off = Math.sin(Date.now()*0.002 + (waveX+waveY)*0.01) * 15;
                             this.ctx.fillRect(waveX, waveY + off, grid-8, grid-8); break;
                         case 'ocean':
-    const isMovingLeft = (p.offset <= 50);
-    p.x += (isMovingLeft ? -p.speed : p.speed);
+    p.x += (p.offset > 50 ? p.speed : -p.speed);
     if(p.x > this.canvas.width + 60) p.x = -60; 
-    if(p.x < -60) p.x = this.canvas.width + 60;
-    this.ctx.translate(p.x, p.y);
-    if (isMovingLeft) {
-        this.ctx.scale(-1, 1);
-    }
+    if(p.x < -60) p.x = this.canvas.width + 60;）
     this.ctx.beginPath();
-    this.ctx.moveTo(0, 0); 
-    this.ctx.lineTo(-30, -15);
-    this.ctx.lineTo(-30, 15);
+    this.ctx.moveTo(p.x + 20, p.y);  
+    this.ctx.lineTo(p.x, p.y - 10);  
+    this.ctx.lineTo(p.x - 20, p.y);
+    this.ctx.lineTo(p.x, p.y + 10);  
+    this.ctx.closePath();  
     this.ctx.fill();
     break;
                         default:
