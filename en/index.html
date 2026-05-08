@@ -112,6 +112,38 @@
             opacity: 0;
         }
 
+        .sw-bubble {
+    position: absolute;
+    bottom: 150%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(51, 51, 51, 0.95);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, transform 1s;
+    pointer-events: none;
+    z-index: 100;
+}
+.sw-bubble::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    border: 6px solid transparent;
+    border-top-color: rgba(51, 51, 51, 0.95);
+    margin-left: -6px;
+}
+.sw-bubble.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-5px);
+}
+
         .input-group {
             display: flex;
             align-items: baseline;
@@ -645,6 +677,7 @@
                 <input type="number" id="in-hr" value="0" inputmode="decimal"> <span class="label" id="unit-h" style="white-space: nowrap !important; margin-left: 4px; margin-right: 12px; flex-shrink: 0;">時間</span>
                 <input type="number" id="in-min" value="25" inputmode="decimal"> <span class="label" id="unit-m">分</span>
                 <input type="number" id="in-sec" value="0" inputmode="decimal"> <span class="label" id="unit-s">秒</span>
+                <div id="sw-hint" class="sw-bubble">Stopwatch</div>
             </div>
             <input type="text" id="in-task" placeholder="メモ" spellcheck="false">
             
@@ -758,6 +791,23 @@
             defHr: document.getElementById('def-hr'), defMin: document.getElementById('def-min'), defSec: document.getElementById('def-sec'),
             menuTrigger: document.getElementById('menu-trigger'), menuDropdown: document.getElementById('menu-dropdown')
         };
+
+        function checkStopwatchMode() {
+            const h = parseInt(el.inHr.value) || 0;
+            const m = parseInt(el.inMin.value) || 0;
+            const s = parseInt(el.inSec.value) || 0;
+            const hint = document.getElementById('sw-hint');
+            if (!hint) return; 
+            if (h === 0 && m === 0 && s === 0) {
+                hint.classList.add('show');
+            } else {
+                hint.classList.remove('show');
+            }
+        }
+        [el.inHr, el.inMin, el.inSec].forEach(inputEl => {
+            if (inputEl) {inputEl.addEventListener('input', checkStopwatchMode);inputEl.addEventListener('keyup', checkStopwatchMode);}
+        });
+        checkStopwatchMode();
 
         window.addEventListener('DOMContentLoaded', () => {
             const pageTitle = isJa 
