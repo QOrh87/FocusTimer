@@ -1024,17 +1024,19 @@
         };
         el.bgmPanel.onclick = (e) => e.stopPropagation();
         function toggleBGM(state) {
-            const icon = document.getElementById('bgm-icon');
             const trigger = document.getElementById('bgm-trigger');
+            const toggleSwitch = document.getElementById('bgm-toggle-switch');
             localStorage.setItem('bgm_status', state);
             if (state === 'off') {
-                el.bgmTrigger.classList.add('bgm-off');
+                if (trigger) trigger.classList.add('bgm-off');
                 if (toggleSwitch) toggleSwitch.checked = false;
-                bgm.pause();
+                if (typeof bgm !== 'undefined') {bgm.pause();}
             } else {
-                el.bgmTrigger.classList.remove('bgm-off');
+                if (trigger) trigger.classList.remove('bgm-off');
                 if (toggleSwitch) toggleSwitch.checked = true;
-                if (isRunning) bgm.play();
+                if (typeof bgm !== 'undefined' && isActive) {
+                    if (bgm.audio.src) {bgm.play();} else {console.warn("BGMソースが設定されていません");}
+                }
             }
         }
         document.getElementById('bgm-upload').onchange = async function(e) {
