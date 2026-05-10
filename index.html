@@ -1707,13 +1707,7 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
         el.menuTrigger.onclick = (e) => { e.stopPropagation(); el.menuDropdown.style.display = el.menuDropdown.style.display === 'block' ? 'none' : 'block'; el.cfgPanel.style.display = 'none'; el.logSidePanel.style.display = 'none'; el.bgmPanel.style.display = 'none'; };
         el.cfgTrigger.onclick = (e) => { e.stopPropagation(); el.cfgPanel.style.display = el.cfgPanel.style.display === 'block' ? 'none' : 'block'; el.menuDropdown.style.display = 'none'; el.bgmPanel.style.display = 'none'; if (el.cfgPanel.style.display === 'block') if (el.cfgPanel.style.display === 'block' && !isMobile) {el.defMin.focus();} updateFocusUI(); };
         el.logTrigger.onclick = (e) => { e.stopPropagation(); el.logSidePanel.style.display = el.logSidePanel.style.display === 'block' ? 'none' : 'block'; el.menuDropdown.style.display = 'none'; el.bgmPanel.style.display = 'none'; if(el.logSidePanel.style.display === 'block') renderLogs(); };
-        el.bgmTrigger.onclick = (e) => { e.stopPropagation();
-            const isVisible = el.bgmPanel.style.display === 'block';
-            el.bgmPanel.style.display = isVisible ? 'none' : 'block';
-            el.menuDropdown.style.display = 'none';
-            el.cfgPanel.style.display = 'none'; 
-            el.logSidePanel.style.display = 'none';
-        };
+        el.bgmTrigger.onclick = (e) => { e.stopPropagation(); const isVisible = el.bgmPanel.style.display === 'block'; el.bgmPanel.style.display = isVisible ? 'none' : 'block'; el.menuDropdown.style.display = 'none'; el.cfgPanel.style.display = 'none'; el.logSidePanel.style.display = 'none'; };
         document.addEventListener('click', (e) => {
             if (!el.cfgPanel.contains(e.target) && !el.cfgTrigger.contains(e.target) &&
                 !el.logSidePanel.contains(e.target) && !el.logTrigger.contains(e.target) &&
