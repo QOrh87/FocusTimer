@@ -1055,6 +1055,21 @@
             document.getElementById('volume-value').innerText = Math.round(val * 100) + '%';
             localStorage.setItem('bgm_volume', val);
         };
+        bgm.fadeOut = function(duration = 2000) {
+    const startVolume = this.audio.volume;
+    const step = startVolume / (duration / 100);
+    const fadeInterval = setInterval(() => {
+        if (this.audio.volume > step) {
+            this.audio.volume -= step;
+        } else {
+            this.audio.volume = 0;
+            this.audio.pause();
+            clearInterval(fadeInterval);
+            const savedSettings = JSON.parse(localStorage.getItem('focusTimerSettings_v3') || '{}');
+            this.audio.volume = savedSettings.bgmVolume || 0.5;
+        }
+    }, 100);
+};
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
@@ -1493,7 +1508,7 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
                 animStopTimeout = setTimeout(() => {
                 stopFinishAnim();
             }, 1200000);
-            bgm.pause(); 
+            bgm.fadeOut(2000);
         }
 
         function stopFinishAnim() {
