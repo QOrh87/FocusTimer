@@ -741,11 +741,13 @@
         <button onclick="document.getElementById('bgm-upload').click()" class="btn-sub" style="width: 100%; padding: 8px; cursor: pointer;">
             音源を選択 (.mp3 / .wav)
         </button>
-        <div id="bgm-filename" style="font-size: 0.75em; margin-top: 6px; opacity: 0.6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-            ファイルが選択されていません
-        </div>
     </div>
 
+    <div id="bgm-list-container" style="margin-bottom: 6px; max-height: 150px; overflow-y: auto;">
+        <div id="bgm-list" style="font-size: 0.75em; display: flex; flex-direction: column; gap: 8px; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+        </div>
+    </div>
+    
     <div style="margin-top: 10px;">
         <div style="display: flex; justify-content: space-between; font-size: 0.8em; margin-bottom: 5px;">
             <span>Volume</span>
@@ -1039,16 +1041,6 @@
                 }
             }
         }
-        document.getElementById('bgm-upload').onchange = async function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const url = URL.createObjectURL(file);
-                bgm.audio.src = url;
-                document.getElementById('bgm-filename').innerText = file.name;
-                document.getElementById('bgm-toggle-switch').checked = true;
-                toggleBGM('on');
-            }
-        };
         document.getElementById('bgm-volume').oninput = function(e) {
             const val = e.target.value;
             bgm.setVolume(val);
@@ -1779,10 +1771,13 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
         const dbName = "BGM_Database";
         const storeName = "bgm_store";
         let db;
-        const request = indexedDB.open(dbName, 1);
+        let currentBgmList = [];
+        const request = indexedDB.open(dbName, 2);
         request.onupgradeneeded = (e) => {
             db = e.target.result;
-            db.createObjectStore(storeName);
+            if (!db.objectStoreNames.contains(storeName)) {
+                db.createObjectStore(storeName);
+            }
         };
         request.onsuccess = (e) => {
             db = e.target.result;
@@ -1791,28 +1786,114 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
         function loadBGMFromDB() {
             const transaction = db.transaction([storeName], "readonly");
             const store = transaction.objectStore(storeName);
-            const getReq = store.get("user_bgm");
+            const getReq = store.get("bgm_list");    
             getReq.onsuccess = () => {
-                if (getReq.result) {
-                    const blob = getReq.result.blob;
-                    const fileName = getReq.result.name;
-                    const url = URL.createObjectURL(blob);  
-                    bgm.audio.src = url;
-                    document.getElementById('bgm-filename').innerText = "保存済み: " + fileName;
-                    console.log("IndexedDBからBGMを復元しました");
+                if (getReq.result && Array.isArray(getReq.result)) {
+                    currentBgmList = getReq.result;
+                } else {
+                    currentBgmList = [];
                 }
+                renderBgmList();
+                selectActiveBGM();
             };
+        }
+        function renderBgmList() {
+            const listEl = document.getElementById('bgm-list');
+            if (!listEl) return;
+            listEl.innerHTML = '';
+            if (currentBgmList.length === 0) {
+                listEl.innerHTML = '<div style="opacity: 0.5; font-size: 0.85em;">曲が保存されていません</div>';
+                return;
+            }
+            currentBgmList.forEach((song, index) => {
+                const item = document.createElement('div');
+                item.style.cssText = 'display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.2); padding: 6px 8px; border-radius: 6px;';   
+                item.innerHTML = `
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; flex: 1; overflow: hidden; margin-right: 5px;">
+                <input type="checkbox" class="bgm-select-check" data-index="${index}" ${song.checked ? 'checked' : ''} onchange="toggleSelectBGM(${index}, this.checked)">
+                <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.9em;" title="${escapeHtml(song.name)}">
+                ${escapeHtml(song.name)}
+                </span>
+                </label>
+                <button onclick="deleteBGM(${index})" style="background: none; border: none; color: #ff5f5f; cursor: pointer; font-size: 0.9em; padding: 2px 5px;">✕</button>
+                `;
+                listEl.appendChild(item);
+            });
+        }
+        function selectActiveBGM() {
+            const selectedSong = currentBgmList.find(song => song.checked);   
+            if (selectedSong) {
+                const url = URL.createObjectURL(selectedSong.blob);
+                bgm.audio.src = url;
+                if (isActive && localStorage.getItem('bgm_status') !== 'off') {
+                    bgm.play();
+                }
+            } else {
+                bgm.audio.src = '';
+                bgm.pause();
+            }
+        }
+        function toggleSelectBGM(targetIndex, isChecked) {
+            currentBgmList.forEach((song, i) => {
+                song.checked = (i === targetIndex) ? isChecked : false;
+            });
+            saveBgmListToDB();
+            renderBgmList();
+            selectActiveBGM();
+        }
+        function deleteBGM(index) {
+            if (confirm(`「${currentBgmList[index].name}」を削除しますか？`)) {
+                currentBgmList.splice(index, 1);
+                saveBgmListToDB();
+                renderBgmList();
+                selectActiveBGM();
+            }
+        }
+        function saveBgmListToDB() {
+            const transaction = db.transaction([storeName], "readwrite");
+            const store = transaction.objectStore(storeName);
+            store.put(currentBgmList, "bgm_list");
+        }
+        function escapeHtml(str) {
+            return str.replace(/[&<>"']/g, function(m) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+            });
         }
         document.getElementById('bgm-upload').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
-            const url = URL.createObjectURL(file);
-            bgm.audio.src = url;
-            document.getElementById('bgm-filename').innerText = file.name;
-            const transaction = db.transaction([storeName], "readwrite");
-            const store = transaction.objectStore(storeName);
-            store.put({ blob: file, name: file.name }, "user_bgm");  
-            console.log("BGMをIndexedDBに保存しました");
+            const newSong = {
+                id: Date.now(),
+                name: file.name,
+                blob: file,
+                checked: true, 
+                timestamp: Date.now()
+            };
+            currentBgmList.forEach(song => song.checked = false);
+            if (currentBgmList.length >= 5) {
+                let targetIndex = currentBgmList.findIndex(song => !song.checked);
+                if (targetIndex !== -1) {
+                    currentBgmList[targetIndex] = newSong;
+                } else {
+                    let oldestIndex = 0;
+                    let oldestTime = currentBgmList[0].timestamp;
+                    for (let i = 1; i < currentBgmList.length; i++) {
+                        if (currentBgmList[i].timestamp < oldestTime) {
+                            oldestTime = currentBgmList[i].timestamp;
+                            oldestIndex = i;
+                        }
+                    }
+                    currentBgmList[oldestIndex] = newSong;
+                }
+            } else {
+                currentBgmList.push(newSong);
+            }
+            saveBgmListToDB();
+            renderBgmList();
+            selectActiveBGM();
+            document.getElementById('bgm-toggle-switch').checked = true;
+            if (typeof toggleBGM === 'function') toggleBGM('on');
+            e.target.value = '';
         });
 
         if ('serviceWorker' in navigator) {
