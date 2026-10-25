@@ -508,7 +508,9 @@
         body:has(#timer-view[style*="display: block"]) .ad-container,
         body:has(#result-screen[style*="display: flex"]) .ad-container,
         body:has(#timer-view[style*="display: block"]) .controls-top-right,
-        body:has(#result-screen[style*="display: flex"]) .controls-top-right {
+        body:has(#result-screen[style*="display: flex"]) .controls-top-right,
+        body:has(#timer-view[style*="display: block"]):not(.clock-mode) #clock-trigger,
+        body:has(#result-screen[style*="display: flex"]) #clock-trigger {
             display: none !important;
         }
 
@@ -1179,6 +1181,7 @@
                     el.timer.style.display = 'block';
                     el.overlay.style.display = 'none';
                     document.body.classList.add('timer-active');
+                    document.body.classList.add('clock-mode');
                     requestWakeLock();
                     if (el.cfgFull.checked) {
                         try { document.documentElement.requestFullscreen(); } catch(e){}
@@ -1210,6 +1213,7 @@
                 el.timer.style.display = 'none';
                 el.settings.style.display = 'flex';
                 document.body.classList.remove('timer-active');
+                document.body.classList.remove('clock-mode');
                 document.title = isJa ? "勉強タイマー｜Focus Timer Pro" : "Focus Timer Pro | Simple & Minimalist Study Timer";   
                 if (document.fullscreenElement) {
                     document.exitFullscreen().catch(() => {});
