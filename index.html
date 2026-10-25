@@ -718,13 +718,13 @@
 </div>
             </div>
         </div>
-        <div id="philosophy-trigger" class="panel-trigger" title="設計思想">💡</div>
-        <div id="log-trigger" class="panel-trigger" title="履歴を表示/非表示">📖</div>
+        <div id="philosophy-trigger" class="panel-trigger" title="小話">💡</div>
+        <div id="log-trigger" class="panel-trigger" title="履歴">📖</div>
         <div id="config-trigger" class="panel-trigger" title="詳細設定">⚙️</div>
     </div>
 
 <div class="controls-top-left">
-    <div id="bgm-trigger" class="panel-trigger" title="BGM/環境音">
+    <div id="bgm-trigger" class="panel-trigger" title="BGM">
         <span id="bgm-icon">♪</span>
         <div id="bgm-slash" class="slash-line"></div>
     </div>
@@ -974,8 +974,8 @@
             memo: isJa ? 'メモ' : 'Task',
             start: isJa ? '▶開始' : '▶START',
             tipConfig: isJa ? '詳細設定' : 'Settings',
-            tipLog:    isJa ? '履歴を表示/非表示' : 'Show/Hide Log',
-            tipIdea:   isJa ? '設計思想' : 'Philosophy',
+            tipLog:    isJa ? '履歴' : 'Show/Hide Log',
+            tipIdea:   isJa ? '小話' : 'Philosophy',
             tipMenu:   isJa ? 'メニュー' : 'Menu',
             logTitle:  isJa ? '履歴（最大 400）' : 'Log (Max 400)',
             full: isJa ? '自動フルスクリーン' : 'Auto Fullscreen',
@@ -1186,8 +1186,6 @@
                     updateClockDisplay();
                     if (clockInterval) clearInterval(clockInterval);
                     clockInterval = setInterval(updateClockDisplay, 1000);  
-                    if (!el.bgmTrigger.classList.contains('bgm-off')) {
-                        bgm.play(); }
                 } else {
                     exitClockMode();
                 }
@@ -2007,7 +2005,7 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
     </script>
 </div> 
      <section id="concept-section" class="concept-container">
-            <h2 class="section-title">設計思想</h2>
+            <h2 class="section-title">小話</h2>
         <div class="concept-card">
             <h3>1．ポモドーロ・テクニック</h3>
             <p>　人間の集中力は無限ではありません。私たちの体にはウルトラディアンリズムと呼ばれる約90分の覚醒周期の波が存在します。また、現代の高負荷な知的作業においては、これより短いサイクルでの調整が有効だと言われています。ポモドーロ・テクニックは、25分の作業と5分の休憩を繰り返すことで高いパフォーマンスを維持する技術です。このことを踏まえ、本アプリはデフォルトの集中の時間を25分に設定しましたが、個人の集中力に合わせた調節をして自由に使ってください。</p>
