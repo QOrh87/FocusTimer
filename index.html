@@ -728,6 +728,9 @@
         <span id="bgm-icon">♪</span>
         <div id="bgm-slash" class="slash-line"></div>
     </div>
+    <div id="clock-trigger" class="panel-trigger" title="デジタル時計">
+        <span>⌚</span>
+    </div>
 </div>
 
 <div id="bgm-panel" class="side-panel">
@@ -939,6 +942,9 @@
         let totalPausedMs = 0;
         let animStopTimeout = null;
         let deferredPrompt; 
+        let isClockMode = false;
+        let clockInterval = null;
+        let lastTimeString = ""; 
         
         const installContainer = document.getElementById('installContainer');
         const installBtn = document.getElementById('installBtn');
@@ -1157,6 +1163,60 @@
             for (const [id, text] of Object.entries(tooltips)) {
                 const target = document.getElementById(id);
                 if (target) target.title = text;
+            }
+
+            const clockTrigger = document.getElementById('clock-trigger');
+            if (clockTrigger) {
+                clockTrigger.onclick = (e) => {
+                    e.stopPropagation();
+                    toggleClockMode();
+                };
+            }
+            function toggleClockMode() {
+                isClockMode = !isClockMode;
+                if (isClockMode) {
+                    el.settings.style.display = 'none';
+                    el.timer.style.display = 'block';
+                    el.overlay.style.display = 'none';
+                    document.body.classList.add('timer-active');
+                    requestWakeLock();
+                    if (el.cfgFull.checked) {
+                        try { document.documentElement.requestFullscreen(); } catch(e){}
+                    }
+                    updateClockDisplay();
+                    if (clockInterval) clearInterval(clockInterval);
+                    clockInterval = setInterval(updateClockDisplay, 1000);  
+                    if (!el.bgmTrigger.classList.contains('bgm-off')) {
+                        bgm.play(); }
+                } else {
+                    exitClockMode();
+                }
+            }
+            function updateClockDisplay() {
+                const now = new Date();
+                const h = String(now.getHours()).padStart(2, '0');
+                const m = String(now.getMinutes()).padStart(2, '0');
+                const s = String(now.getSeconds()).padStart(2, '0');
+                const showSec = el.cfgShowSec.checked;
+                const timeString = showSec ? `${h}:${m}:${s}` : `${h}:${m}`;                
+                if (isClockMode && lastTimeString !== "" && timeString !== lastTimeString) {
+                    playFlipSound();
+                }
+                lastTimeString = timeString;
+                el.countdown.textContent = timeString;
+                document.title = `(${timeString}) Clock`;
+            }
+            function exitClockMode() {
+                isClockMode = false;
+                if (clockInterval) clearInterval(clockInterval);
+                el.timer.style.display = 'none';
+                el.settings.style.display = 'flex';
+                document.body.classList.remove('timer-active');
+                document.title = isJa ? "勉強タイマー｜Focus Timer Pro" : "Focus Timer Pro | Simple & Minimalist Study Timer";   
+                if (document.fullscreenElement) {
+                    document.exitFullscreen().catch(() => {});
+                }
+                releaseWakeLock();
             }
 
             const pcGuideEl = document.getElementById('pc-guide');
@@ -1606,6 +1666,42 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
                 osc.stop(startTime + duration + 0.01);
             });
         }
+
+        function playFlipSound() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const t = audioCtx.currentTime;
+            const noiseBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.04, audioCtx.sampleRate);
+            const output = noiseBuffer.getChannelData(0);
+            for (let i = 0; i < noiseBuffer.length; i++) {
+                output[i] = Math.random() * 2 - 1;
+            }
+            const whiteNoise = audioCtx.createBufferSource();
+            whiteNoise.buffer = noiseBuffer;
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(2600, t);
+            filter.Q.setValueAtTime(1.2, t);
+            const noiseGain = audioCtx.createGain();
+            noiseGain.gain.setValueAtTime(0.09, t);
+            noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+            whiteNoise.connect(filter);
+            filter.connect(noiseGain);
+            noiseGain.connect(audioCtx.destination);
+            whiteNoise.start(t);
+            whiteNoise.stop(t + 0.04);
+            const osc = audioCtx.createOscillator();
+            const oscGain = audioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(1100, t);
+            osc.frequency.exponentialRampToValueAtTime(300, t + 0.025);
+            oscGain.gain.setValueAtTime(0.06, t);
+            oscGain.gain.exponentialRampToValueAtTime(0.001, t + 0.025);
+            osc.connect(oscGain);
+            oscGain.connect(audioCtx.destination);
+            osc.start(t);
+            osc.stop(t + 0.025);
+        }        
         
         async function playAlarmSound() {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1703,6 +1799,7 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
         function clearAllLogs() { if(confirm("すべての履歴を削除しますか？")) { localStorage.setItem('focusTimerLogs_v3', '[]'); renderLogs(); } }
 
         window.onkeydown = (e) => {
+            if (isClockMode) {exitClockMode(); return;}
             if (document.querySelector('.modal-overlay[style*="display: flex"]')) { if(e.key === 'Escape') closeModal(document.querySelector('.modal-overlay[style*="display: flex"]').id); return; }
             if (isAlarmPlaying || el.result.style.display === 'flex') { e.preventDefault(); resetTimer(); return; }
             if (isActive) { if (e.code === 'Space') { e.preventDefault(); togglePause(); } if (e.key === 'Escape') resetTimer(); return; }
@@ -1752,8 +1849,7 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content', theme
         el.logSidePanel.style.display = 'none';
         };
         
-        el.countdown.onclick = (e) => { e.stopPropagation(); togglePause(); };
-        
+        el.countdown.onclick = (e) => { e.stopPropagation(); if (isClockMode) { exitClockMode(); } else { togglePause(); } };        
         el.result.onclick = (e) => { e.stopPropagation(); resetTimer(); };
         let scrollBackTimeout;
         window.addEventListener('scroll', () => {
